@@ -12,7 +12,7 @@ MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017/archivai")
 def get_database():
     """Connect to MongoDB and return the database instance"""
     try:
-        # Create a connection with SSL configuration
+        # Create a connection with SSL configuration for pymongo 4.1.1
         client = pymongo.MongoClient(
             MONGODB_URI,
             ssl=True,
