@@ -1,0 +1,7 @@
+flask==2.0.1
+pymongo==4.1.1
+dnspython==2.2.1
+python-dotenv==0.19.1
+nltk==3.6.5
+PyPDF2==2.10.5
+gunicorn==20.1.0
