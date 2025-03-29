@@ -1,5 +1,4 @@
 import pymongo
-import ssl
 import os
 from dotenv import load_dotenv
 
@@ -12,11 +11,10 @@ MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017/archivai")
 def get_database():
     """Connect to MongoDB and return the database instance"""
     try:
-        # Create a connection with SSL configuration for pymongo 4.1.1
+        # Create a connection with simplified SSL configuration for pymongo 4.1.1
         client = pymongo.MongoClient(
             MONGODB_URI,
-            ssl=True,
-            ssl_cert_reqs=ssl.CERT_NONE,
+            tlsAllowInvalidCertificates=True,  # This replaces ssl_cert_reqs=ssl.CERT_NONE
             serverSelectionTimeoutMS=5000
         )
         
