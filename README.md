@@ -1,304 +1,174 @@
 # ArchivAI: Blockchain and AI for Digital Preservation
 
-This project demonstrates the integration of blockchain technology and artificial intelligence for digital archiving and preservation.
+ArchivAI is a revolutionary framework that integrates blockchain technology and artificial intelligence for digital archiving and preservation. The platform leverages blockchain for document verification and AI for metadata extraction to create a trustworthy digital preservation system.
 
-## Overview
+## 🌟 Overview
 
-ArchivAI leverages blockchain for document verification and AI for metadata extraction to create a trustworthy digital preservation system. The platform allows users to upload documents, which are then automatically processed to extract meaningful information and verified on a blockchain to ensure authenticity and immutability.
+Digital archives today face three critical challenges:
+1. **Authentication**: How to verify the authenticity of digital objects in an era of deepfakes and AI-generated content
+2. **Resource Limitations**: Managing overwhelming content volume with limited staff and funding
+3. **Preservation Silos**: Disconnected systems that complicate consistent authentication
 
-## Live Demo
+ArchivAI addresses these challenges by integrating blockchain and AI technologies. Our approach is unique because AI plays a direct role in verification - when the system extracts text, identifies entities, generates tags, and creates summaries, these actions become cryptographically verifiable on a blockchain.
 
-Access the live application: [ArchivAI Demo](https://archivai-demo.onrender.com)
+## 🏗️ System Architecture
 
-## Features
+![System Architecture Diagram](https://placeholder.com/system-architecture-diagram)
+*Coming soon: System Architecture Diagram showing the five layers and data flow*
 
-* **Document Upload and Storage**: Securely store documents with unique identifiers
-* **AI-powered Metadata Extraction**: Automatically extract relevant information from documents
-* **Intelligent Tag Generation**: Generate tags based on document content for easy categorization
-* **Entity Recognition**: Automatically identify entities such as people, organizations, dates, emails, etc.
-* **Document Summarization**: Create concise summaries of document content
-* **Blockchain Verification**: Ensure document authenticity through immutable blockchain records
-* **Processing Status Tracking**: Monitor the status of document processing in real-time
-* **Search and Retrieval Capabilities**: Easily find documents based on their metadata
+ArchivAI consists of five interconnected layers:
+- **User Interface Layer**: Tailored interfaces for users, experts, and administrators
+- **API Layer**: Manages all interactions between users and backend systems
+- **Processing Layers**: 
+  - AI Processing Pipeline for content analysis and metadata extraction
+  - Blockchain Layer for verification and immutable record-keeping
+- **Integration Point**: Where AI-generated data becomes part of blockchain transactions
+- **Storage Layer**: Maintains documents, metadata, and blockchain records
 
-## Technology Stack
+## ✨ Features
 
-* **Backend**: Flask (Python) REST API
-* **AI Processing**: NLTK for natural language processing and metadata extraction
-* **Blockchain**: Custom blockchain implementation with cryptographic verification for document integrity
-* **Database**: MongoDB Atlas for cloud-based metadata storage
-* **Frontend**: Simple HTML/JavaScript interface for demonstration purposes
+- **Document Upload and Storage**: Securely store documents with unique identifiers
+- **AI-powered Metadata Extraction**: Automatically extract relevant information from documents
+- **Intelligent Tag Generation**: Generate tags based on document content for easy categorization
+- **Entity Recognition**: Automatically identify entities such as people, organizations, dates, emails, etc.
+- **Document Summarization**: Create concise summaries of document content
+- **Blockchain Verification**: Ensure document authenticity through immutable blockchain records
+- **Processing Status Tracking**: Monitor the status of document processing in real-time
+- **Search and Retrieval Capabilities**: Easily find documents based on their metadata
 
-## API Documentation
+## 🛠️ Technology Stack
+
+- **Backend**: Flask (Python) REST API
+- **AI Processing**: NLTK for natural language processing and metadata extraction
+- **Blockchain**: Custom blockchain implementation with cryptographic verification for document integrity
+- **Database**: MongoDB Atlas for cloud-based metadata storage
+- **Frontend**: Simple HTML/JavaScript interface for demonstration purposes
+
+## 🧪 Demo
+
+*Coming soon: Screenshots of the application interface and demo video*
+
+![ArchivAI Demo Screenshot Placeholder](https://placeholder.com/screenshot)
+
+## 📋 Installation and Setup
+
+### Prerequisites
+- Python 3.9+
+- MongoDB Atlas account
+- Git
+
+### Setup Instructions
+
+1. Clone the repository:
+```bash
+git clone https://github.com/Noah-Banjo/ArchivAI.git
+cd ArchivAI
+```
+
+2. Install dependencies:
+```bash
+cd api
+pip install -r requirements.txt
+```
+
+3. Configure MongoDB:
+   - Create a `.env` file in the `/api` directory
+   - Add your MongoDB connection string:
+   ```
+   MONGODB_URI=mongodb+srv://yourusername:yourpassword@yourcluster.mongodb.net/archivai
+   ```
+
+4. Run the application:
+```bash
+python app.py
+```
+
+5. Access the API at http://localhost:8000
+
+## 🌐 API Documentation
 
 ### Base URL
-
 ```
 https://archivai-demo.onrender.com
 ```
 
-### Endpoints
+### Key Endpoints
 
-#### Check API Status
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/` | GET | Check API Status |
+| `/api/documents/upload-simple` | POST | Upload Document |
+| `/api/documents` | GET | Get All Documents |
+| `/api/documents/{documentId}` | GET | Get Document Details |
+| `/api/documents/{documentId}/verify` | GET | Verify Document on Blockchain |
+| `/api/blockchain/info` | GET | Get Blockchain Info |
 
-```
-GET /
-```
+For complete API documentation, please see our [API Documentation](docs/API.md) page.
 
-Response:
-```json
-{
-  "message": "Welcome to ArchivAI API"
-}
-```
+## 🔍 Use Cases
 
-#### Upload Document
+ArchivAI is particularly valuable for:
 
-```
-POST /api/documents/upload-simple
-```
+- **Historical Archives**: Preserving cultural heritage with verifiable authenticity
+- **Legal Records**: Maintaining chain of custody for legal documents
+- **Research Repositories**: Ensuring data integrity and provenance
+- **Corporate Archives**: Simplifying compliance and records management
+- **Digital Libraries**: Enhancing metadata and discovery while ensuring authenticity
 
-Parameters:
-- `file` (multipart/form-data): The document file to upload
+## 🚀 Development Roadmap
 
-Response:
-```json
-{
-  "status": "success",
-  "documentId": "f2c90c43-5684-4cba-b02d-9c0de5537a5a",
-  "filename": "document.pdf",
-  "path": "documents/f2c90c43-5684-4cba-b02d-9c0de5537a5a/document.pdf",
-  "dateCreated": "2025-03-29T16:39:47.000Z"
-}
-```
+We're actively working on enhancing ArchivAI with:
 
-#### Get All Documents
+- **Enhanced AI capabilities**: More sophisticated natural language processing, OCR, speech-to-text, and computer vision
+- **Full blockchain implementation**: Moving from our simulated proof-of-concept to a properly distributed blockchain system
+- **Cross-institutional implementation**: Extending the system across multiple archives
+- **Preservation-focused machine learning**: Developing AI specifically for digital preservation needs
+- **Performance evaluation**: Formal testing to quantify efficiency improvements
 
-```
-GET /api/documents
-```
+## 👥 Team
 
-Response:
-```json
-{
-  "status": "success",
-  "count": 1,
-  "documents": [
-    {
-      "documentId": "f2c90c43-5684-4cba-b02d-9c0de5537a5a",
-      "filename": "document.pdf",
-      "contentType": "application/pdf",
-      "fileSize": 2432000,
-      "dateCreated": "2025-03-29T16:39:47.000Z",
-      "title": "document.pdf",
-      "status": "processed",
-      "tags": []
-    }
-  ]
-}
-```
+- **[Oluseyi Noah Adebanjo](https://orcid.org/0009-0002-6367-5999)** - Center for Arkansas History and Culture, United States
+- **[Anuoluwapo Victoria Alabi](https://orcid.org/0009-0002-3641-3977)** - Prairie View A&M University, United States
+- **[Oyeleke Onaolapo Bolaji](https://orcid.org/0009-0009-0871-7333)** - Yaşar Üniversitesi, Turkey
 
-#### Get Document Details
+## 🤝 Contributing
 
-```
-GET /api/documents/{documentId}
-```
+We welcome contributions to ArchivAI! Here's how you can help:
 
-Response:
-```json
-{
-  "status": "success",
-  "document": {
-    "documentId": "f2c90c43-5684-4cba-b02d-9c0de5537a5a",
-    "filename": "document.pdf",
-    "contentType": "application/pdf",
-    "fileSize": 2432000,
-    "dateCreated": "2025-03-05T23:51:56.000Z",
-    "dateModified": "2025-03-05T23:51:57.000Z",
-    "status": "processed",
-    "tags": [],
-    "aiMetadata": {
-      "entities": [],
-      "summary": "",
-      "language": "unknown",
-      "characterCount": 0
-    },
-    "blockchainVerification": {
-      "status": "pending",
-      "timestamp": "2025-03-05T23:51:56.000Z"
-    }
-  }
-}
-```
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-#### Verify Document on Blockchain
+Please see our [Contributing Guidelines](CONTRIBUTING.md) for more details.
+
+## ❓ Frequently Asked Questions
+
+**Q: How does ArchivAI compare to traditional digital preservation approaches?**  
+A: ArchivAI enhances traditional approaches by adding blockchain verification for authenticity and AI processing for efficient metadata extraction, addressing both trust and efficiency concerns simultaneously.
+
+**Q: What types of documents can ArchivAI process?**  
+A: Currently, ArchivAI can process text-based documents. Support for images, audio, and video is planned for future releases.
+
+**Q: Is ArchivAI suitable for small archives with limited technical expertise?**  
+A: While the current prototype requires some technical knowledge to set up, we're working on making the system more accessible for organizations with varying levels of technical expertise.
+
+**Q: How does the blockchain verification work without high energy consumption?**  
+A: We use a permissioned blockchain model that avoids resource-intensive "mining," making it more energy-efficient than cryptocurrency blockchains.
+
+## 📚 Citation Information
+
+If you use ArchivAI in your research, please cite our paper:
 
 ```
-GET /api/documents/{documentId}/verify
+Adebanjo, O. N., Alabi, A. V., & Bolaji, O. O. (2025). ArchivAI Revolution: Pioneering the Fusion of Blockchain, AI, and ML for Digital Preservation. In Proceedings of the 21st International Conference on Digital Preservation (iPRES 2025), Wellington, Aotearoa New Zealand.
 ```
 
-Response:
-```json
-{
-  "status": "success",
-  "verified": true,
-  "documentHash": "0xabcdef1234567890",
-  "transactionId": "0x1234567890abcdef",
-  "timestamp": "2025-03-05T23:51:56.000Z"
-}
-```
+## 📄 License
 
-#### Get Blockchain Info
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-```
-GET /api/blockchain/info
-```
+## 🙏 Acknowledgments
 
-Response:
-```json
-{
-  "status": "success",
-  "chainLength": 12,
-  "lastBlockHash": "0xabcdef1234567890",
-  "verifiedDocuments": 8
-}
-```
-
-## Usage Examples
-
-### JavaScript
-
-```javascript
-// Upload a document
-async function uploadDocument(file) {
-  const formData = new FormData();
-  formData.append('file', file);
-  
-  const response = await fetch('https://archivai-demo.onrender.com/api/documents/upload-simple', {
-    method: 'POST',
-    body: formData
-  });
-  
-  return await response.json();
-}
-
-// Get all documents
-async function getDocuments() {
-  const response = await fetch('https://archivai-demo.onrender.com/api/documents');
-  return await response.json();
-}
-
-// Get a specific document
-async function getDocument(documentId) {
-  const response = await fetch(`https://archivai-demo.onrender.com/api/documents/${documentId}`);
-  return await response.json();
-}
-```
-
-### Python
-
-```python
-import requests
-
-# Upload a document
-def upload_document(file_path):
-    files = {'file': open(file_path, 'rb')}
-    response = requests.post('https://archivai-demo.onrender.com/api/documents/upload-simple', files=files)
-    return response.json()
-
-# Get all documents
-def get_documents():
-    response = requests.get('https://archivai-demo.onrender.com/api/documents')
-    return response.json()
-
-# Get a specific document
-def get_document(document_id):
-    response = requests.get(f'https://archivai-demo.onrender.com/api/documents/{document_id}')
-    return response.json()
-```
-
-## Installation
-
-### Prerequisites
-
-* Python 3.9+
-* MongoDB Atlas account
-* Git
-
-### Setup
-
-1. Clone the repository:
-   ```
-   git clone https://github.com/Noah-Banjo/ArchivAI.git
-   cd ArchivAI
-   ```
-
-2. Install dependencies:
-   ```
-   cd api
-   pip install -r requirements.txt
-   ```
-
-3. Configure MongoDB:
-   * Create a `.env` file in the `/api` directory
-   * Add your MongoDB connection string:
-     ```
-     MONGODB_URI=mongodb+srv://yourusername:yourpassword@yourcluster.mongodb.net/archivai
-     ```
-
-4. Run the application:
-   ```
-   python app.py
-   ```
-
-5. Access the API at `http://localhost:8000`
-
-### Using the Demo Interface
-
-1. Open `demo/upload_test.html` in your browser, or
-2. Visit the hosted interface at [ArchivAI Frontend](https://archivai-demo.onrender.com) 
-
-## System Architecture
-
-### Document Processing Flow
-
-1. **Upload**: User uploads document through the API
-2. **Storage**: Document is saved to storage with unique ID
-3. **AI Processing**: Background thread processes document to extract metadata
-   - Text extraction from various formats
-   - Entity recognition
-   - Summary generation
-   - Language detection
-   - Tag generation
-4. **Blockchain Registration**: Document hash is calculated and registered on the blockchain
-5. **Metadata Storage**: All metadata is stored in MongoDB Atlas
-6. **Retrieval**: User can retrieve processed documents with all metadata
-
-### Blockchain Implementation
-
-The blockchain component provides:
-- Document hash creation using SHA-256
-- Immutable chain of document registration events
-- Verification mechanism to prove document authenticity
-- Timestamp proof of document existence
-
-## Research Context
-
-This prototype was developed for research on applying emerging technologies to archival science, specifically for the presentation "ArchivAI Revolution: Blockchain, AI and ML for Digital Preservation" at iPRES 2025.
-
-## Future Improvements
-
-- Add user authentication and access control
-- Implement more sophisticated AI document analysis
-- Add search functionality across document content
-- Create a more robust frontend application
-- Expand blockchain features for enhanced verification
-- Add multi-language support for document processing
-
-## Status
-
-This project is deployed and functional for research and demonstration purposes.
-
-## License
-
-[MIT License](LICENSE)
+The authors would like to acknowledge the Center for Arkansas History and Culture (CAHC) for the training and exposure that significantly contributed to our professional growth and the development of this project. Special thanks to Amanda McQueen, Elise Tanner, and Brigitte Billeaudeaux for their support and resources.
