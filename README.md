@@ -105,7 +105,7 @@ https://archivai-demo.onrender.com
 | `/api/documents/{documentId}/verify` | GET | Verify Document on Blockchain |
 | `/api/blockchain/info` | GET | Get Blockchain Info |
 
-For complete API documentation, please see our [API Documentation](docs/API.md) page.
+For complete API documentation, please see our [API Documentation](docs/API_EXTENDED.md) page.
 
 ## 🔍 Use Cases
 
