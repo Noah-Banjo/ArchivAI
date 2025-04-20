@@ -13,7 +13,7 @@ ArchivAI addresses these challenges by integrating blockchain and AI technologie
 
 ## 🏗️ System Architecture
 
-![System Architecture Diagram](images/system-architecture.svg)
+![System Architecture Diagram](images/archivai-system-architecture.png)
 *Coming soon: System Architecture Diagram showing the five layers and data flow*
 
 
