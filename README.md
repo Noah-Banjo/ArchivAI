@@ -13,8 +13,9 @@ ArchivAI addresses these challenges by integrating blockchain and AI technologie
 
 ## 🏗️ System Architecture
 
-![System Architecture Diagram](https://placeholder.com/system-architecture-diagram)
+![System Architecture Diagram](images/system-architecture.svg)
 *Coming soon: System Architecture Diagram showing the five layers and data flow*
+
 
 ArchivAI consists of five interconnected layers:
 - **User Interface Layer**: Tailored interfaces for users, experts, and administrators
@@ -48,7 +49,8 @@ ArchivAI consists of five interconnected layers:
 
 *Coming soon: Screenshots of the application interface and demo video*
 
-![ArchivAI Demo Screenshot Placeholder](https://placeholder.com/screenshot)
+
+![ArchivAI Demo Screenshot Placeholder](images/demo-placeholder.png)
 
 ## 📋 Installation and Setup
 
