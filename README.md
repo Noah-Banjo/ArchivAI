@@ -14,7 +14,6 @@ ArchivAI addresses these challenges by integrating blockchain and AI technologie
 ## 🏗️ System Architecture
 
 ![System Architecture Diagram](images/archivai-system-architecture.png)
-*Coming soon: System Architecture Diagram showing the five layers and data flow*
 
 
 ArchivAI consists of five interconnected layers:
@@ -145,7 +144,7 @@ We welcome contributions to ArchivAI! Here's how you can help:
 
 Please see our [Contributing Guidelines](CONTRIBUTING.md) for more details.
 
-## ❓ Frequently Asked Questions
+## ❓ Possibly Asked Questions
 
 **Q: How does ArchivAI compare to traditional digital preservation approaches?**  
 A: ArchivAI enhances traditional approaches by adding blockchain verification for authenticity and AI processing for efficient metadata extraction, addressing both trust and efficiency concerns simultaneously.
