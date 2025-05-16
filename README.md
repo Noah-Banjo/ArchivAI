@@ -48,6 +48,7 @@ ArchivAI consists of five interconnected layers:
 
 *Coming soon: Screenshots of the application interface and demo video*
 
+Here is the demo video of how to install and use the app:  https://youtu.be/qi30tyWtv40
 
 ![ArchivAI Demo Screenshot Placeholder](images/demo-placeholder.png)
 
