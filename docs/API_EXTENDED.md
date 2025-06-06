@@ -300,5 +300,5 @@ The following enhancements are planned for future API versions:
 
 For API support or to report issues, please contact:
 
-- Email: support@archivai.example.com
+- Email (Not functioning yet): support@archivai.example.com
 - GitHub Issues: https://github.com/Noah-Banjo/ArchivAI/issues
