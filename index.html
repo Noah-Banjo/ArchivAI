@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArchivAI - Document Processing with AI and Blockchain</title>
+    
+    <!-- Updated Tailwind CSS link -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
+    <!-- Updated Font Awesome link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Inline critical styles to ensure basic styling even if CDN fails -->
+    <style>
+        /* Fallback styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f4f6;
+            color: #111827;
+        }
+        
+        header {
+            background-color: #1e40af;
+            color: white;
+            padding: 1rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 0.5rem;
+            padding:://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+        }
+        
+        button, .button {
+            background-color: #2563eb;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        button:hover, .button:hover {
+            background-color: #1d4ed8;
+        }
+        
+        button:disabled, .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .upload-area {
+            border: 2px dashed #93c5fd;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .upload-area:hover {
+            background-color: #eff6ff;
+        }
+        
+        /* Flexbox and Grid layouts */
+        .flex {
+            display: flex;
+        }
+        
+        .justify-between {
+            justify-content: space-between;
+        }
+        
+        .items-center {
+            align-items: center;
+        }
+        
+        /* Fix for Tailwind responsive classes */
+        .flex-col {
+            flex-direction: column;
+        }
+        
+        .space-x-6 > * + * {
+            margin-left: 1.5rem;
+        }
+        
+        .space-y-2 > * + * {
+            margin-top: 0.5rem;
+        }
+        
+        /* Responsive grid */
+        @media (min-width: 768px) {
+            .md\:flex-row {
+                flex-direction: row !important;
+            }
+            
+            .md\:w-1\/2 {
+                width: 50% !important;
+            }
+            
+            .md\:pr-8 {
+                padding-right: 2rem !important;
+            }
+            
+            .md\:mb-0 {
+                margin-bottom: 0 !important;
+            }
+            
+            .md\:grid-cols-2 {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 2rem !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="bg-blue-800 text-white">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold">ArchivAI</h1>
+                    <p class="text-blue-200">Document Processing with AI and Blockchain</p>
+                </div>
+                <nav>
+                    <ul class="flex space-x-6">
+                        <li><a href="#demo" class="text-white hover:text-blue-300">Demo</a></li>
+                        <li><a href="#documentation" class="text-white hover:text-blue-300">Documentation</a></li>
+                        <li><a href="#about" class="text-white hover:text-blue-300">About</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Hero Section -->
+        <section class="bg-white rounded-lg shadow-md p-8 mb-8">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-6 md:mb-0 md:pr-8">
+                    <h2 class="text-3xl font-bold mb-4">Intelligent Document Management</h2>
+                    <p class="text-lg mb-6">ArchivAI automatically processes your documents using AI for metadata extraction and blockchain for verification. Upload a document and let our system handle the rest.</p>
+                    <a href="#demo" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded inline-block">Try it now</a>
+                </div>
+                <div class="md:w-1/2">
+                    <img src="https://via.placeholder.com/600x400" alt="Document processing illustration" class="rounded-lg shadow-md"/>
+                </div>
+            </div>
+        </section>
+
+        <!-- Demo Section -->
+        <section id="demo" class="bg-white rounded-lg shadow-md p-8 mb-8">
+            <h2 class="text-2xl font-bold mb-6 pb-2 border-b">Interactive Demo</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Upload Section -->
+                <div class="bg-gray-50 p-6 rounded-lg shadow-inner">
+                    <h3 class="text-xl font-semibold mb-4">Upload Document</h3>
+                    <div id="drop-area" class="border-2 border-dashed border-blue-300 rounded-lg p-8 text-center cursor-pointer hover:bg-blue-50 transition-all">
+                        <i class="fas fa-cloud-upload-alt text-4xl text-blue-500 mb-4"></i>
+                        <p class="mb-4">Drag and drop your document here or click to browse</p>
+                        <input type="file" id="file-input" class="hidden">
+                        <button id="browse-button" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">Select File</button>
+                    </div>
+                    <div id="selected-file" class="mt-4 hidden">
+                        <div class="flex items-center p-3 bg-blue-100 rounded">
+                            <i class="fas fa-file-alt text-blue-600 mr-2"></i>
+                            <span id="file-name" class="truncate flex-grow"></span>
+                            <button id="remove-file" class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button id="upload-button" disabled class="mt-4 bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded disabled:opacity-50 disabled:cursor-not-allowed w-full">
+                        Upload Document
+                    </button>
+                    <div id="upload-status" class="mt-4 hidden p-3 rounded"></div>
+                </div>
+                
+                <!-- Results Section -->
+                <div class="bg-gray-50 p-6 rounded-lg shadow-inner">
+                    <h3 class="text-xl font-semibold mb-4">Documents</h3>
+                    <button id="refresh-button" class="mb-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
+                        <i class="fas fa-sync-alt mr-1"></i> Refresh List
+                    </button>
+                    <div id="documents-list" class="h-64 overflow-y-auto border border-gray-200 rounded p-2 bg-white">
+                        <p class="text-gray-500 italic text-center mt-8">No documents loaded yet</p>
+                    </div>
+                    
+                    <div id="document-details" class="mt-6 hidden">
+                        <h4 class="font-semibold text-lg border-b pb-1 mb-2">Document Details</h4>
+                        <div id="document-details-content"></div>
+                        
+                        <!-- Download Button -->
+                        <div id="document-actions" class="mt-4">
+                            <button id="download-document" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
+                                <i class="fas fa-download mr-1"></i> Download Original Document
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Documentation Section -->
+        <section id="documentation" class="bg-white rounded-lg shadow-md p-8 mb-8">
+            <h2 class="text-2xl font-bold mb-6 pb-2 border-b">API Documentation</h2>
+            
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold mb-3">Base URL</h3>
+                <div class="bg-gray-100 p-3 rounded-md font-mono text-sm" id="api-base-url">https://archivai-demo.onrender.com</div>
+            </div>
+            
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold mb-3">Endpoints</h3>
+                
+                <!-- Endpoint 1 -->
+                <div class="mb-6 border-l-4 border-blue-500 pl-4">
+                    <h4 class="font-bold mb-2">GET /</h4>
+                    <p class="mb-2">Check if the API is running.</p>
+                    <div class="bg-gray-100 p-3 rounded-md font-mono text-sm mb-2">
+                        // Example Response
+                        {
+                          "message": "Welcome to ArchivAI API"
+                        }
+                    </div>
+                </div>
+                
+                <!-- Endpoint 2 -->
+                <div class="mb-6 border-l-4 border-green-500 pl-4">
+                    <h4 class="font-bold mb-2">POST /api/documents/upload-simple</h4>
+                    <p class="mb-2">Upload a document for processing with AI and blockchain verification.</p>
+                    <p class="mb-2"><strong>Content-Type:</strong> multipart/form-data</p>
+                    <p class="mb-2"><strong>Parameters:</strong></p>
+                    <ul class="list-disc pl-6 mb-2">
+                        <li><code>file</code> - The document file to upload</li>
+                    </ul>
+                    <div class="bg-gray-100 p-3 rounded-md font-mono text-sm mb-2">
+                        // Example Response
+                        {
+                          "status": "success",
+                          "documentId": "123e4567-e89b-12d3-a456-426614174000",
+                          "filename": "document.pdf",
+                          "path": "documents/123e4567-e89b-12d3-a456-426614174000/document.pdf",
+                          "dateCreated": "2025-03-29T16:39:47.000Z"
+                        }
+                    </div>
+                </div>
+                
+                <!-- Endpoint 3 -->
+                <div class="mb-6 border-l-4 border-purple-500 pl-4">
+                    <h4 class="font-bold mb-2">GET /api/documents</h4>
+                    <p class="mb-2">Get a list of all uploaded documents.</p>
+                    <div class="bg-gray-100 p-3 rounded-md font-mono text-sm mb-2">
+                        // Example Response
+                        {
+                          "status": "success",
+                          "count": 1,
+                          "documents": [
+                            {
+                              "documentId": "123e4567-e89b-12d3-a456-426614174000",
+                              "filename": "document.pdf",
+                              "contentType": "application/pdf",
+                              "fileSize": 123456,
+                              "dateCreated": "2025-03-29T16:39:47.000Z",
+                              "title": "document.pdf",
+                              "status": "processed",
+                              "tags": ["contract", "legal", "agreement"]
+                            }
+                          ]
+                        }
+                    </div>
+                </div>
+                
+                <!-- Endpoint 4 -->
+                <div class="mb-6 border-l-4 border-yellow-500 pl-4">
+                    <h4 class="font-bold mb-2">GET /api/documents/{documentId}</h4>
+                    <p class="mb-2">Get detailed information about a specific document.</p>
+                    <p class="mb-2"><strong>Parameters:</strong></p>
+                    <ul class="list-disc pl-6 mb-2">
+                        <li><code>documentId</code> - The ID of the document to retrieve</li>
+                    </ul>
+                    <div class="bg-gray-100 p-3 rounded-md font-mono text-sm mb-2">
+                        // Example Response
+                        {
+                          "status": "success",
+                          "document": {
+                            "documentId": "123e4567-e89b-12d3-a456-426614174000",
+                            "filename": "document.pdf",
+                            "path": "documents/123e4567-e89b-12d3-a456-426614174000/document.pdf",
+                            "contentType": "application/pdf",
+                            "fileSize": 123456,
+                            "dateCreated": "2025-03-29T16:39:47.000Z",
+                            "dateModified": "2025-03-29T16:40:12.000Z",
+                            "status": "processed",
+                            "title": "document.pdf",
+                            "description": "",
+                            "tags": ["contract", "legal", "agreement"],
+                            "aiMetadata": {
+                              "entities": ["Company A", "Company B", "John Doe"],
+                              "summary": "This is a legal agreement between Company A and Company B.",
+                              "language": "english",
+                              "characterCount": 12345
+                            },
+                            "blockchainVerification": {
+                              "status": "verified",
+                              "transactionId": "0x1234567890abcdef",
+                              "timestamp": "2025-03-29T16:40:10.000Z",
+                              "documentHash": "0xabcdef1234567890"
+                            }
+                          }
+                        }
+                    </div>
+                </div>
+                
+                <!-- Endpoint 5 -->
+                <div class="mb-6 border-l-4 border-red-500 pl-4">
+                    <h4 class="font-bold mb-2">GET /api/documents/{documentId}/download</h4>
+                    <p class="mb-2">Download the original document file.</p>
+                    <p class="mb-2"><strong>Parameters:</strong></p>
+                    <ul class="list-disc pl-6 mb-2">
+                        <li><code>documentId</code> - The ID of the document to download</li>
+                    </ul>
+                    <p class="mb-2"><strong>Response:</strong> The original document file with appropriate Content-Type header</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- About Section -->
+        <section id="about" class="bg-white rounded-lg shadow-md p-8 mb-8">
+            <h2 class="text-2xl font-bold mb-6 pb-2 border-b">About ArchivAI</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Features</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-brain text-blue-600 mt-1 mr-2"></i>
+                            <span><strong>AI Processing:</strong> Automatically extract metadata, entities, and summaries from documents</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-link text-blue-600 mt-1 mr-2"></i>
+                            <span><strong>Blockchain Verification:</strong> Ensure document authenticity with immutable blockchain records</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-search text-blue-600 mt-1 mr-2"></i>
+                            <span><strong>Intelligent Tagging:</strong> Automatically categorize documents for easy retrieval</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-file-alt text-blue-600 mt-1 mr-2"></i>
+                            <span><strong>Multiple Document Types:</strong> Support for PDFs and other document formats</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-code text-blue-600 mt-1 mr-2"></i>
+                            <span><strong>API-First Design:</strong> Easy integration with existing systems</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-download text-blue-600 mt-1 mr-2"></i>
+                            <span><strong>Document Retrieval:</strong> Download and verify original documents anytime</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Technologies</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-server text-blue-600 mt-1 mr-2"></i>
+                            <span><strong>Backend:</strong> Flask API with Python</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-database text-blue-600 mt-1 mr-2"></i>
+                            <span><strong>Database:</strong> MongoDB Atlas for document metadata storage</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-robot text-blue-600 mt-1 mr-2"></i>
+                            <span><strong>AI:</strong> Natural Language Processing for document analysis</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-cubes text-blue-600 mt-1 mr-2"></i>
+                            <span><strong>Blockchain:</strong> Secure hashing and verification</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-cloud text-blue-600 mt-1 mr-2"></i>
+                            <span><strong>Deployment:</strong> Hosted on Render</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-blue-900 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h3 class="text-xl font-bold">ArchivAI</h3>
+                    <p class="text-blue-300">Document Intelligence Platform</p>
+                </div>
+                <div>
+                    <p>&copy; 2025 ArchivAI. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // API Base URL - Change this to your actual API URL
+            const API_BASE_URL = 'https://archivai-demo.onrender.com';
+            
+            // Update the displayed API URL
+            const apiBaseUrlElement = document.getElementById('api-base-url');
+            if (apiBaseUrlElement) {
+                apiBaseUrlElement.textContent = API_BASE_URL;
+            }
+            
+            // DOM elements
+            const fileInput = document.getElementById('file-input');
+            const browseButton = document.getElementById('browse-button');
+            const dropArea = document.getElementById('drop-area');
+            const selectedFile = document.getElementById('selected-file');
+            const fileName = document.getElementById('file-name');
+            const removeFile = document.getElementById('remove-file');
+            const uploadButton = document.getElementById('upload-button');
+            const uploadStatus = document.getElementById('upload-status');
+            const refreshButton = document.getElementById('refresh-button');
+            const documentsList = document.getElementById('documents-list');
+            const documentDetails = document.getElementById('document-details');
+            const documentDetailsContent = document.getElementById('document-details-content');
+            const downloadButton = document.getElementById('download-document');
+            
+            // Current document ID - for download feature
+            let currentDocumentId = null;
+            let currentFileName = null;
+            
+            // File selection via browse button
+            if (browseButton && fileInput) {
+                browseButton.addEventListener('click', function() {
+                    fileInput.click();
+                });
+            }
+            
+            // File selection change handler
+            if (fileInput) {
+                fileInput.addEventListener('change', function() {
+                    handleFileSelection(this.files);
+                });
+            }
+            
+            // Drag and drop functionality
+            if (dropArea) {
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    dropArea.addEventListener(eventName, preventDefaults, false);
+                });
+                
+                function preventDefaults(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    dropArea.addEventListener(eventName, highlight, false);
+                });
+                
+                ['dragleave', 'drop'].forEach(eventName => {
+                    dropArea.addEventListener(eventName, unhighlight, false);
+                });
+                
+                function highlight() {
+                    dropArea.classList.add('bg-blue-100');
+                }
+                
+                function unhighlight() {
+                    dropArea.classList.remove('bg-blue-100');
+                }
+                
+                dropArea.addEventListener('drop', function(e) {
+                    const dt = e.dataTransfer;
+                    const files = dt.files;
+                    handleFileSelection(files);
+                });
+            }
+            
+            // Handle selected file
+            function handleFileSelection(files) {
+                if (files && files.length > 0 && fileName && selectedFile && uploadButton) {
+                    const file = files[0];
+                    fileName.textContent = file.name;
+                    selectedFile.classList.remove('hidden');
+                    uploadButton.disabled = false;
+                }
+            }
+            
+            // Remove selected file
+            if (removeFile && fileInput && selectedFile && uploadButton) {
+                removeFile.addEventListener('click', function() {
+                    fileInput.value = '';
+                    selectedFile.classList.add('hidden');
+                    uploadButton.disabled = true;
+                });
+            }
+            
+            // Upload file
+            if (uploadButton && fileInput && uploadStatus) {
+                uploadButton.addEventListener('click', async function() {
+                    if (!fileInput.files || fileInput.files.length === 0) return;
+                    
+                    const file = fileInput.files[0];
+                    uploadButton.disabled = true;
+                    
+                    // Show loading status
+                    uploadStatus.classList.remove('hidden');
+                    uploadStatus.classList.add('bg-blue-100', 'text-blue-800');
+                    uploadStatus.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Uploading document...';
+                    
+                    try {
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        
+                        const response = await fetch(`${API_BASE_URL}/api/documents/upload-simple`, {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        // Handle potential response errors
+                        if (!response.ok) {
+                            throw new Error(`Server error: ${response.status}`);
+                        }
+                        
+                        const result = await response.json();
+                        
+                        if (result.status === 'success') {
+                            uploadStatus.classList.remove('bg-blue-100', 'text-blue-800');
+                            uploadStatus.classList.add('bg-green-100', 'text-green-800');
+                            uploadStatus.innerHTML = `<i class="fas fa-check-circle mr-2"></i> Document uploaded successfully!`;
+                            
+                            // Reset file input
+                            fileInput.value = '';
+                            selectedFile.classList.add('hidden');
+                            
+                            // Refresh document list
+                            fetchDocuments();
+                        } else {
+                            throw new Error(result.error || 'Unknown error');
+                        }
+                    } catch (error) {
+                        uploadStatus.classList.remove('bg-blue-100', 'text-blue-800');
+                        uploadStatus.classList.add('bg-red-100', 'text-red-800');
+                        uploadStatus.innerHTML = `<i class="fas fa-exclamation-circle mr-2"></i> Error: ${error.message}`;
+                        uploadButton.disabled = false;
+                    }
+                });
+            }
+            
+            // Refresh document list
+            if (refreshButton) {
+                refreshButton.addEventListener('click', fetchDocuments);
+            }
+            
+            // Download document
+            if (downloadButton) {
+                downloadButton.addEventListener('click', function() {
+                    if (currentDocumentId) {
+                        window.location.href = `${API_BASE_URL}/api/documents/${currentDocumentId}/download`;
+                    }
+                });
+            }
+            
+            // Fetch documents
+            async function fetchDocuments() {
+                if (!documentsList) return;
+                
+                try {
+                    documentsList.innerHTML = '<p class="text-center py-4"><i class="fas fa-spinner fa-spin mr-2"></i> Loading documents...</p>';
+                    
+                    const response = await fetch(`${API_BASE_URL}/api/documents`);
+                    
+                    // Handle potential response errors
+                    if (!response.ok) {
+                        throw new Error(`Server error: ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    
+                    if (result.status === 'success') {
+                        if (!result.documents || result.documents.length === 0) {
+                            documentsList.innerHTML = '<p class="text-gray-500 italic text-center mt-8">No documents found</p>';
+                            return;
+                        }
+                        
+                        let html = '';
+                        result.documents.forEach(doc => {
+                            const statusClass = getStatusClass(doc.status);
+                            
+                            html += `
+                                <div class="mb-2 p-2 border rounded hover:bg-gray-50 cursor-pointer document-item" data-id="${escapeHtml(doc.documentId)}">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-file-alt text-blue-600 mr-2"></i>
+                                        <span class="truncate flex-grow">${escapeHtml(doc.filename)}</span>
+                                        <span class="ml-2 ${statusClass} text-xs px-2 py-1 rounded-full">${escapeHtml(doc.status || 'Unknown')}</span>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        
+                        documentsList.innerHTML = html;
+                        
+                        // Add click event listeners to document items
+                        document.querySelectorAll('.document-item').forEach(item => {
+                            item.addEventListener('click', function() {
+                                const documentId = this.getAttribute('data-id');
+                                fetchDocumentDetails(documentId);
+                            });
+                        });
+                    } else {
+                        throw new Error(result.error || 'Unknown error');
+                    }
+                } catch (error) {
+                    documentsList.innerHTML = `<p class="text-red-500 text-center mt-8">Error: ${error.message}</p>`;
+                }
+            }
+            
+            // Fetch document details
+            async function fetchDocumentDetails(documentId) {
+                if (!documentDetails || !documentDetailsContent) return;
+                
+                try {
+                    documentDetails.classList.add('hidden');
+                    
+                    const response = await fetch(`${API_BASE_URL}/api/documents/${documentId}`);
+                    
+                    // Handle potential response errors
+                    if (!response.ok) {
+                        throw new Error(`Server error: ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    
+                    if (result.status === 'success') {
+                        const doc = result.document;
+                        const statusClass = getStatusClass(doc.status || 'unknown');
+                        
+                        // Set current document for download
+                        currentDocumentId = doc.documentId;
+                        currentFileName = doc.filename;
+                        
+                        let metadataHtml = '';
+                        if (doc.aiMetadata) {
+                            metadataHtml = `
+                                <div class="mt-4">
+                                    <h5 class="font-semibold">AI Metadata</h5>
+                                    <div class="bg-blue-50 p-2 rounded mt-2">
+                                        <p><strong>Summary:</strong> ${escapeHtml(doc.aiMetadata.summary || 'Not available')}</p>
+                                        <p><strong>Language:</strong> ${escapeHtml(doc.aiMetadata.language || 'Not detected')}</p>
+                                        <p><strong>Character Count:</strong> ${doc.aiMetadata.characterCount || 'Unknown'}</p>
+                                        <p><strong>Entities:</strong> ${doc.aiMetadata.entities && doc.aiMetadata.entities.length > 0 ? doc.aiMetadata.entities.map(e => escapeHtml(e)).join(', ') : 'None detected'}</p>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        
+                        let blockchainHtml = '';
+                        if (doc.blockchainVerification) {
+                            const blockchainStatus = doc.blockchainVerification.status || 'unknown';
+                            const blockchainStatusClass = blockchainStatus === 'verified' ? 'bg-green-100 text-green-800' : 
+                                                        (blockchainStatus === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800');
+                            
+                            blockchainHtml = `
+                                <div class="mt-4">
+                                    <h5 class="font-semibold">Blockchain Verification</h5>
+                                    <div class="bg-blue-50 p-2 rounded mt-2">
+                                        <p><strong>Status:</strong> <span class="${blockchainStatusClass} px-2 py-1 rounded-full text-xs">${escapeHtml(blockchainStatus)}</span></p>
+                                        <p><strong>Transaction ID:</strong> ${escapeHtml(doc.blockchainVerification.transactionId || 'Not available')}</p>
+                                        <p><strong>Timestamp:</strong> ${formatDate(doc.blockchainVerification.timestamp)}</p>
+                                        <p><strong>Document Hash:</strong> <span class="font-mono text-xs">${escapeHtml(doc.blockchainVerification.documentHash || 'Not available')}</span></p>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        
+                        documentDetailsContent.innerHTML = `
+                            <div>
+                                <p><strong>Document ID:</strong> <span class="font-mono text-xs">${escapeHtml(doc.documentId)}</span></p>
+                                <p><strong>Filename:</strong> ${escapeHtml(doc.filename)}</p>
+                                <p><strong>Content Type:</strong> ${escapeHtml(doc.contentType || 'Unknown')}</p>
+                                <p><strong>File Size:</strong> ${formatFileSize(doc.fileSize)}</p>
+                                <p><strong>Created:</strong> ${formatDate(doc.dateCreated)}</p>
+                                <p><strong>Last Modified:</strong> ${formatDate(doc.dateModified)}</p>
+                                <p><strong>Status:</strong> <span class="${statusClass} px-2 py-1 rounded-full text-xs">${escapeHtml(doc.status || 'Unknown')}</span></p>
+                                
+                                <div class="mt-3">
+                                    <p><strong>Tags:</strong></p>
+                                    <div class="flex flex-wrap mt-1">
+                                        ${doc.tags && doc.tags.length > 0 ? doc.tags.map(tag => 
+                                            `<span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mr-2 mb-2">${escapeHtml(tag)}</span>`
+                                        ).join('') : '<span class="text-gray-500 italic">No tags</span>'}
+                                    </div>
+                                </div>
+                                
+                                ${metadataHtml}
+                                ${blockchainHtml}
+                            </div>
+                        `;
+                        
+                        // Update download button text with filename
+                        if (downloadButton) {
+                            downloadButton.innerHTML = `<i class="fas fa-download mr-1"></i> Download "${escapeHtml(doc.filename)}"`;
+                        }
+                        
+                        documentDetails.classList.remove('hidden');
+                    } else {
+                        throw new Error(result.error || 'Unknown error');
+                    }
+                } catch (error) {
+                    documentDetailsContent.innerHTML = `<p class="text-red-500">Error: ${error.message}</p>`;
+                    documentDetails.classList.remove('hidden');
+                }
+            }
+            
+            // Helper functions
+            function getStatusClass(status) {
+                if (!status) return 'bg-gray-100 text-gray-800';
+                
+                switch (status.toLowerCase()) {
+                    case 'processed':
+                        return 'bg-green-100 text-green-800';
+                    case 'uploading':
+                    case 'pending':
+                        return 'bg-yellow-100 text-yellow-800';
+                    case 'error':
+                        return 'bg-red-100 text-red-800';
+                    default:
+                        return 'bg-gray-100 text-gray-800';
+                }
+            }
+            
+            function formatDate(dateString) {
+                if (!dateString) return 'Not available';
+                try {
+                    const date = new Date(dateString);
+                    return date.toLocaleString();
+                } catch (e) {
+                    return 'Invalid date';
+                }
+            }
+            
+            function formatFileSize(bytes) {
+                if (!bytes) return 'Unknown';
+                const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+                let size = bytes;
+                let unitIndex = 0;
+                
+                while (size >= 1024 && unitIndex < units.length - 1) {
+                    size /= 1024;
+                    unitIndex++;
+                }
+                
+                return `${size.toFixed(2)} ${units[unitIndex]}`;
+            }
+            
+            // Security: Escape HTML to prevent XSS
+            function escapeHtml(unsafe) {
+                if (unsafe === null || unsafe === undefined) return '';
+                return String(unsafe)
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+            
+            // Initialize on page load
+            fetchDocuments();
+        });
+    </script>
+</body>
+</html>
