@@ -1,4 +1,4 @@
-# ArchivAI: Blockchain and AI for Digital Preservation
+# ArchivAI: Blockchain, AI, and ML for Digital Preservation
 
 ArchivAI is a revolutionary framework that integrates blockchain technology and artificial intelligence for digital archiving and preservation. The platform leverages blockchain for document verification and AI for metadata extraction to create a trustworthy digital preservation system.
 
