@@ -37,10 +37,40 @@
         .card {
             background: white;
             border-radius: 0.5rem;
-            padding:://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css1.5rem;
+            padding: 1.5rem;
             margin-bottom: 1.5rem;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
         }
+        .pronom-badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: #f0f9ff; border: 1px solid #bae6fd;
+            color: #0369a1; border-radius: 4px; padding: 2px 8px;
+            font-size: 0.75rem; font-family: monospace;
+        }
+        .entity-chip {
+            display: inline-block; padding: 2px 8px;
+            border-radius: 999px; font-size: 0.7rem; font-weight: 600;
+            margin: 2px;
+        }
+        .entity-PERSON     { background:#dbeafe; color:#1e40af; }
+        .entity-ORGANIZATION { background:#d1fae5; color:#065f46; }
+        .entity-PLACE,
+        .entity-LOCATION   { background:#fef3c7; color:#92400e; }
+        .entity-DATE,
+        .entity-TIME       { background:#ede9fe; color:#5b21b6; }
+        .entity-LAW,
+        .entity-LEGAL_REFERENCE { background:#fee2e2; color:#991b1b; }
+        .entity-EMAIL      { background:#f3f4f6; color:#374151; }
+        .entity-default    { background:#e5e7eb; color:#374151; }
+        .premis-timeline { border-left: 3px solid #3b82f6; margin-left: 8px; padding-left: 16px; }
+        .premis-event { position: relative; margin-bottom: 12px; }
+        .premis-event::before {
+            content: ''; position: absolute; left: -22px; top: 6px;
+            width: 10px; height: 10px; border-radius: 50%;
+            background: #3b82f6; border: 2px solid white;
+            box-shadow: 0 0 0 2px #3b82f6;
+        }
+        .premis-event.failure::before { background: #ef4444; box-shadow: 0 0 0 2px #ef4444; }
         
         button, .button {
             background-color: #2563eb;
@@ -185,6 +215,12 @@
                             </button>
                         </div>
                     </div>
+                    <!-- API key (shown only when server requires it) -->
+                    <div id="api-key-row" class="mt-3 hidden">
+                        <label class="block text-sm text-gray-600 mb-1">API Key <span class="text-red-500">*</span></label>
+                        <input type="password" id="api-key-input" placeholder="Enter X-API-Key"
+                               class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    </div>
                     <button id="upload-button" disabled class="mt-4 bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded disabled:opacity-50 disabled:cursor-not-allowed w-full">
                         Upload Document
                     </button>
@@ -204,12 +240,26 @@
                     <div id="document-details" class="mt-6 hidden">
                         <h4 class="font-semibold text-lg border-b pb-1 mb-2">Document Details</h4>
                         <div id="document-details-content"></div>
-                        
-                        <!-- Download Button -->
-                        <div id="document-actions" class="mt-4">
-                            <button id="download-document" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
-                                <i class="fas fa-download mr-1"></i> Download Original Document
+
+                        <!-- Action Buttons -->
+                        <div id="document-actions" class="mt-4 flex flex-wrap gap-2">
+                            <button id="download-document" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded text-sm">
+                                <i class="fas fa-download mr-1"></i> Download
                             </button>
+                            <button id="fixity-check-button" class="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded text-sm">
+                                <i class="fas fa-shield-alt mr-1"></i> Fixity Check
+                            </button>
+                            <a id="ric-metadata-link" href="#" target="_blank"
+                               class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded text-sm inline-flex items-center">
+                                <i class="fas fa-code mr-1"></i> RiC JSON-LD
+                            </a>
+                        </div>
+                        <div id="fixity-result" class="mt-3 hidden p-3 rounded text-sm"></div>
+
+                        <!-- PREMIS Events Timeline -->
+                        <div id="premis-section" class="mt-4 hidden">
+                            <h5 class="font-semibold mb-2">Preservation Event Log (PREMIS 3.0)</h5>
+                            <div id="premis-timeline" class="premis-timeline text-sm"></div>
                         </div>
                     </div>
                 </div>
@@ -376,27 +426,35 @@
                 </div>
                 
                 <div>
-                    <h3 class="text-xl font-semibold mb-4">Technologies</h3>
+                    <h3 class="text-xl font-semibold mb-4">Technologies &amp; Standards</h3>
                     <ul class="space-y-2">
                         <li class="flex items-start">
                             <i class="fas fa-server text-blue-600 mt-1 mr-2"></i>
-                            <span><strong>Backend:</strong> Flask API with Python</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-database text-blue-600 mt-1 mr-2"></i>
-                            <span><strong>Database:</strong> MongoDB Atlas for document metadata storage</span>
+                            <span><strong>Backend:</strong> Flask 3.x (Python)</span>
                         </li>
                         <li class="flex items-start">
                             <i class="fas fa-robot text-blue-600 mt-1 mr-2"></i>
-                            <span><strong>AI:</strong> Natural Language Processing for document analysis</span>
+                            <span><strong>NER:</strong> spaCy — PERSON, ORG, PLACE, DATE, LAW&hellip;</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-database text-blue-600 mt-1 mr-2"></i>
+                            <span><strong>Database:</strong> MongoDB Atlas (documents, blockchain chain, PREMIS events)</span>
                         </li>
                         <li class="flex items-start">
                             <i class="fas fa-cubes text-blue-600 mt-1 mr-2"></i>
-                            <span><strong>Blockchain:</strong> Secure hashing and verification</span>
+                            <span><strong>Blockchain:</strong> Persistent SHA-256 chain — AI metadata bound to each block</span>
                         </li>
                         <li class="flex items-start">
-                            <i class="fas fa-cloud text-blue-600 mt-1 mr-2"></i>
-                            <span><strong>Deployment:</strong> Hosted on Render</span>
+                            <i class="fas fa-fingerprint text-blue-600 mt-1 mr-2"></i>
+                            <span><strong>PRONOM:</strong> File format identification via The National Archives registry</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-history text-blue-600 mt-1 mr-2"></i>
+                            <span><strong>PREMIS 3.0:</strong> Full preservation event lifecycle logging</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-code text-blue-600 mt-1 mr-2"></i>
+                            <span><strong>ICA RiC:</strong> JSON-LD metadata aligned with Records in Contexts ontology</span>
                         </li>
                     </ul>
                 </div>
@@ -422,33 +480,41 @@
     <!-- JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // API Base URL - Change this to your actual API URL
             const API_BASE_URL = 'https://archivai-demo.onrender.com';
-            
-            // Update the displayed API URL
+
             const apiBaseUrlElement = document.getElementById('api-base-url');
-            if (apiBaseUrlElement) {
-                apiBaseUrlElement.textContent = API_BASE_URL;
-            }
-            
-            // DOM elements
-            const fileInput = document.getElementById('file-input');
-            const browseButton = document.getElementById('browse-button');
-            const dropArea = document.getElementById('drop-area');
-            const selectedFile = document.getElementById('selected-file');
-            const fileName = document.getElementById('file-name');
-            const removeFile = document.getElementById('remove-file');
-            const uploadButton = document.getElementById('upload-button');
-            const uploadStatus = document.getElementById('upload-status');
-            const refreshButton = document.getElementById('refresh-button');
-            const documentsList = document.getElementById('documents-list');
-            const documentDetails = document.getElementById('document-details');
+            if (apiBaseUrlElement) apiBaseUrlElement.textContent = API_BASE_URL;
+
+            const fileInput          = document.getElementById('file-input');
+            const browseButton       = document.getElementById('browse-button');
+            const dropArea           = document.getElementById('drop-area');
+            const selectedFile       = document.getElementById('selected-file');
+            const fileName           = document.getElementById('file-name');
+            const removeFile         = document.getElementById('remove-file');
+            const uploadButton       = document.getElementById('upload-button');
+            const uploadStatus       = document.getElementById('upload-status');
+            const refreshButton      = document.getElementById('refresh-button');
+            const documentsList      = document.getElementById('documents-list');
+            const documentDetails    = document.getElementById('document-details');
             const documentDetailsContent = document.getElementById('document-details-content');
-            const downloadButton = document.getElementById('download-document');
-            
-            // Current document ID - for download feature
+            const downloadButton     = document.getElementById('download-document');
+            const fixityButton       = document.getElementById('fixity-check-button');
+            const fixityResult       = document.getElementById('fixity-result');
+            const ricLink            = document.getElementById('ric-metadata-link');
+            const premisSection      = document.getElementById('premis-section');
+            const premisTimeline     = document.getElementById('premis-timeline');
+            const apiKeyInput        = document.getElementById('api-key-input');
+            const apiKeyRow          = document.getElementById('api-key-row');
+
             let currentDocumentId = null;
-            let currentFileName = null;
+            let currentFileName   = null;
+
+            // Show API key field — probe server on load
+            fetch(`${API_BASE_URL}/`).then(r => r.json()).then(() => {
+                // Try a lightweight auth probe
+                fetch(`${API_BASE_URL}/api/documents/upload-simple`, {method:'POST'})
+                    .then(r => { if (r.status === 401 && apiKeyRow) apiKeyRow.classList.remove('hidden'); });
+            }).catch(() => {});
             
             // File selection via browse button
             if (browseButton && fileInput) {
@@ -533,9 +599,14 @@
                     try {
                         const formData = new FormData();
                         formData.append('file', file);
-                        
+
+                        const headers = {};
+                        const apiKey = apiKeyInput ? apiKeyInput.value.trim() : '';
+                        if (apiKey) headers['X-API-Key'] = apiKey;
+
                         const response = await fetch(`${API_BASE_URL}/api/documents/upload-simple`, {
                             method: 'POST',
+                            headers,
                             body: formData
                         });
                         
@@ -640,98 +711,180 @@
             // Fetch document details
             async function fetchDocumentDetails(documentId) {
                 if (!documentDetails || !documentDetailsContent) return;
-                
+                documentDetails.classList.add('hidden');
+                if (fixityResult) { fixityResult.classList.add('hidden'); fixityResult.textContent = ''; }
+                if (premisSection) premisSection.classList.add('hidden');
+
                 try {
-                    documentDetails.classList.add('hidden');
-                    
                     const response = await fetch(`${API_BASE_URL}/api/documents/${documentId}`);
-                    
-                    // Handle potential response errors
-                    if (!response.ok) {
-                        throw new Error(`Server error: ${response.status}`);
-                    }
-                    
+                    if (!response.ok) throw new Error(`Server error: ${response.status}`);
                     const result = await response.json();
-                    
-                    if (result.status === 'success') {
-                        const doc = result.document;
-                        const statusClass = getStatusClass(doc.status || 'unknown');
-                        
-                        // Set current document for download
-                        currentDocumentId = doc.documentId;
-                        currentFileName = doc.filename;
-                        
-                        let metadataHtml = '';
-                        if (doc.aiMetadata) {
-                            metadataHtml = `
-                                <div class="mt-4">
-                                    <h5 class="font-semibold">AI Metadata</h5>
-                                    <div class="bg-blue-50 p-2 rounded mt-2">
-                                        <p><strong>Summary:</strong> ${escapeHtml(doc.aiMetadata.summary || 'Not available')}</p>
-                                        <p><strong>Language:</strong> ${escapeHtml(doc.aiMetadata.language || 'Not detected')}</p>
-                                        <p><strong>Character Count:</strong> ${doc.aiMetadata.characterCount || 'Unknown'}</p>
-                                        <p><strong>Entities:</strong> ${doc.aiMetadata.entities && doc.aiMetadata.entities.length > 0 ? doc.aiMetadata.entities.map(e => escapeHtml(e)).join(', ') : 'None detected'}</p>
-                                    </div>
+                    if (result.status !== 'success') throw new Error(result.error || 'Unknown error');
+
+                    const doc = result.document;
+                    currentDocumentId = doc.documentId;
+                    currentFileName   = doc.filename;
+
+                    // PRONOM format info
+                    const fmt = doc.formatInfo || {};
+                    const pronomHtml = fmt.puid ? `
+                        <p class="mt-1"><strong>Format (PRONOM):</strong>
+                            <a href="${escapeHtml(fmt.pronomUrl)}" target="_blank" class="pronom-badge ml-1">
+                                <i class="fas fa-external-link-alt" style="font-size:9px"></i>
+                                ${escapeHtml(fmt.puid)} — ${escapeHtml(fmt.formatName)}
+                            </a>
+                        </p>` : '';
+
+                    // AI metadata
+                    let metadataHtml = '';
+                    const ai = doc.aiMetadata;
+                    if (ai) {
+                        const entityChips = (ai.entities || []).map(e => {
+                            const t = typeof e === 'object' ? e : {text: e, type: 'default'};
+                            const cls = `entity-${(t.type||'default').replace(/[^A-Z_]/g,'')}`;
+                            return `<span class="entity-chip ${cls}" title="${escapeHtml(t.type||'')}">${escapeHtml(t.text||String(t))}</span>`;
+                        }).join('') || '<em class="text-gray-400">None detected</em>';
+
+                        metadataHtml = `
+                            <div class="mt-4">
+                                <h5 class="font-semibold mb-1">AI Analysis</h5>
+                                <div class="bg-blue-50 p-3 rounded text-sm space-y-1">
+                                    <p><strong>Summary:</strong> ${escapeHtml(ai.summary || 'Not available')}</p>
+                                    <p><strong>Language:</strong> ${escapeHtml(ai.language || '—')}</p>
+                                    <p><strong>Character count:</strong> ${(ai.characterCount||0).toLocaleString()}</p>
+                                    <div class="mt-2"><strong>Named Entities:</strong><div class="mt-1">${entityChips}</div></div>
                                 </div>
-                            `;
-                        }
-                        
-                        let blockchainHtml = '';
-                        if (doc.blockchainVerification) {
-                            const blockchainStatus = doc.blockchainVerification.status || 'unknown';
-                            const blockchainStatusClass = blockchainStatus === 'verified' ? 'bg-green-100 text-green-800' : 
-                                                        (blockchainStatus === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800');
-                            
-                            blockchainHtml = `
-                                <div class="mt-4">
-                                    <h5 class="font-semibold">Blockchain Verification</h5>
-                                    <div class="bg-blue-50 p-2 rounded mt-2">
-                                        <p><strong>Status:</strong> <span class="${blockchainStatusClass} px-2 py-1 rounded-full text-xs">${escapeHtml(blockchainStatus)}</span></p>
-                                        <p><strong>Transaction ID:</strong> ${escapeHtml(doc.blockchainVerification.transactionId || 'Not available')}</p>
-                                        <p><strong>Timestamp:</strong> ${formatDate(doc.blockchainVerification.timestamp)}</p>
-                                        <p><strong>Document Hash:</strong> <span class="font-mono text-xs">${escapeHtml(doc.blockchainVerification.documentHash || 'Not available')}</span></p>
-                                    </div>
-                                </div>
-                            `;
-                        }
-                        
-                        documentDetailsContent.innerHTML = `
-                            <div>
-                                <p><strong>Document ID:</strong> <span class="font-mono text-xs">${escapeHtml(doc.documentId)}</span></p>
-                                <p><strong>Filename:</strong> ${escapeHtml(doc.filename)}</p>
-                                <p><strong>Content Type:</strong> ${escapeHtml(doc.contentType || 'Unknown')}</p>
-                                <p><strong>File Size:</strong> ${formatFileSize(doc.fileSize)}</p>
-                                <p><strong>Created:</strong> ${formatDate(doc.dateCreated)}</p>
-                                <p><strong>Last Modified:</strong> ${formatDate(doc.dateModified)}</p>
-                                <p><strong>Status:</strong> <span class="${statusClass} px-2 py-1 rounded-full text-xs">${escapeHtml(doc.status || 'Unknown')}</span></p>
-                                
-                                <div class="mt-3">
-                                    <p><strong>Tags:</strong></p>
-                                    <div class="flex flex-wrap mt-1">
-                                        ${doc.tags && doc.tags.length > 0 ? doc.tags.map(tag => 
-                                            `<span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mr-2 mb-2">${escapeHtml(tag)}</span>`
-                                        ).join('') : '<span class="text-gray-500 italic">No tags</span>'}
-                                    </div>
-                                </div>
-                                
-                                ${metadataHtml}
-                                ${blockchainHtml}
-                            </div>
-                        `;
-                        
-                        // Update download button text with filename
-                        if (downloadButton) {
-                            downloadButton.innerHTML = `<i class="fas fa-download mr-1"></i> Download "${escapeHtml(doc.filename)}"`;
-                        }
-                        
-                        documentDetails.classList.remove('hidden');
-                    } else {
-                        throw new Error(result.error || 'Unknown error');
+                            </div>`;
                     }
+
+                    // Blockchain verification
+                    let blockchainHtml = '';
+                    const bc = doc.blockchainVerification;
+                    if (bc) {
+                        const s = bc.status || 'unknown';
+                        const sc = s === 'verified' ? 'bg-green-100 text-green-800'
+                                 : s === 'pending'  ? 'bg-yellow-100 text-yellow-800'
+                                 : 'bg-red-100 text-red-800';
+                        blockchainHtml = `
+                            <div class="mt-4">
+                                <h5 class="font-semibold mb-1">Blockchain Verification</h5>
+                                <div class="bg-green-50 p-3 rounded text-sm space-y-1">
+                                    <p><strong>Status:</strong> <span class="${sc} px-2 py-0.5 rounded-full text-xs">${escapeHtml(s)}</span></p>
+                                    <p><strong>Block index:</strong> ${bc.blockIndex != null ? bc.blockIndex : '—'}</p>
+                                    <p><strong>Timestamp:</strong> ${formatDate(bc.timestamp)}</p>
+                                    <p><strong>Document hash:</strong> <span class="font-mono text-xs break-all">${escapeHtml(bc.documentHash||'—')}</span></p>
+                                    <p><strong>Transaction ID:</strong> <span class="font-mono text-xs break-all">${escapeHtml(bc.transactionId||'—')}</span></p>
+                                    <p class="text-xs text-gray-500 mt-1">AI metadata (entities, tags, summary) is cryptographically bound to this block.</p>
+                                </div>
+                            </div>`;
+                    }
+
+                    documentDetailsContent.innerHTML = `
+                        <div class="text-sm space-y-1">
+                            <p><strong>Document ID:</strong> <span class="font-mono text-xs">${escapeHtml(doc.documentId)}</span></p>
+                            <p><strong>Filename:</strong> ${escapeHtml(doc.filename)}</p>
+                            <p><strong>Content-Type:</strong> ${escapeHtml(doc.contentType || '—')}</p>
+                            ${pronomHtml}
+                            <p><strong>File size:</strong> ${formatFileSize(doc.fileSize)}</p>
+                            <p><strong>Created:</strong> ${formatDate(doc.dateCreated)}</p>
+                            <p><strong>Status:</strong> <span class="${getStatusClass(doc.status)} px-2 py-0.5 rounded-full text-xs">${escapeHtml(doc.status||'—')}</span></p>
+                            <div class="mt-2">
+                                <strong>Tags:</strong>
+                                <div class="flex flex-wrap mt-1">
+                                    ${(doc.tags||[]).length > 0
+                                        ? doc.tags.map(t => `<span class="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full mr-1 mb-1">${escapeHtml(t)}</span>`).join('')
+                                        : '<em class="text-gray-400 text-xs">No tags</em>'}
+                                </div>
+                            </div>
+                            ${metadataHtml}
+                            ${blockchainHtml}
+                        </div>`;
+
+                    if (downloadButton) downloadButton.innerHTML = `<i class="fas fa-download mr-1"></i> Download`;
+                    if (ricLink) ricLink.href = `${API_BASE_URL}/api/documents/${documentId}/metadata.jsonld`;
+                    documentDetails.classList.remove('hidden');
+
+                    // Load PREMIS events asynchronously
+                    fetchPremisEvents(documentId);
                 } catch (error) {
-                    documentDetailsContent.innerHTML = `<p class="text-red-500">Error: ${error.message}</p>`;
+                    documentDetailsContent.innerHTML = `<p class="text-red-500 text-sm">Error: ${escapeHtml(error.message)}</p>`;
                     documentDetails.classList.remove('hidden');
                 }
+            }
+
+            // PREMIS event log
+            async function fetchPremisEvents(documentId) {
+                if (!premisSection || !premisTimeline) return;
+                try {
+                    const r = await fetch(`${API_BASE_URL}/api/documents/${documentId}/premis-events`);
+                    if (!r.ok) return;
+                    const data = await r.json();
+                    const events = data.events || [];
+                    if (!events.length) return;
+
+                    const typeIcons = {
+                        ingestion: 'fa-file-import',
+                        characterization: 'fa-robot',
+                        messageDigestCalculation: 'fa-hashtag',
+                        fixityCheck: 'fa-shield-alt',
+                        validation: 'fa-check-circle',
+                    };
+
+                    premisTimeline.innerHTML = events.map(ev => {
+                        const ok = ev.eventOutcomeInformation?.eventOutcome === 'success';
+                        const icon = typeIcons[ev.eventType] || 'fa-circle';
+                        return `<div class="premis-event ${ok ? '' : 'failure'}">
+                            <span class="font-semibold text-blue-700">
+                                <i class="fas ${icon} mr-1"></i>${escapeHtml(ev.eventType)}
+                            </span>
+                            <span class="ml-2 ${ok ? 'text-green-600' : 'text-red-600'} font-semibold text-xs">
+                                ${ok ? 'SUCCESS' : 'FAILURE'}
+                            </span>
+                            <div class="text-gray-500 text-xs">${formatDate(ev.eventDateTime)}</div>
+                            <div class="text-gray-700 text-xs">${escapeHtml(ev.eventDetail||'')}</div>
+                            ${ev.eventOutcomeInformation?.eventOutcomeDetail
+                                ? `<div class="text-gray-500 text-xs italic">${escapeHtml(ev.eventOutcomeInformation.eventOutcomeDetail)}</div>`
+                                : ''}
+                        </div>`;
+                    }).join('');
+
+                    premisSection.classList.remove('hidden');
+                } catch (_) {}
+            }
+
+            // Fixity check
+            if (fixityButton) {
+                fixityButton.addEventListener('click', async () => {
+                    if (!currentDocumentId) return;
+                    fixityButton.disabled = true;
+                    fixityButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Checking…';
+                    fixityResult.classList.add('hidden');
+
+                    try {
+                        const headers = {'Content-Type': 'application/json'};
+                        const apiKey = apiKeyInput ? apiKeyInput.value.trim() : '';
+                        if (apiKey) headers['X-API-Key'] = apiKey;
+
+                        const r = await fetch(
+                            `${API_BASE_URL}/api/documents/${currentDocumentId}/fixity-check`,
+                            {method: 'POST', headers}
+                        );
+                        const data = await r.json();
+                        const pass = data.passed === true;
+                        fixityResult.className = `mt-3 p-3 rounded text-sm ${pass ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
+                        fixityResult.innerHTML = `<i class="fas ${pass ? 'fa-check-circle' : 'fa-exclamation-triangle'} mr-2"></i>
+                            <strong>${pass ? 'PASS' : 'FAIL'}:</strong> ${escapeHtml(data.outcome || data.message || '')}`;
+                        fixityResult.classList.remove('hidden');
+                        fetchPremisEvents(currentDocumentId);
+                    } catch (e) {
+                        fixityResult.className = 'mt-3 p-3 rounded text-sm bg-red-100 text-red-800';
+                        fixityResult.innerHTML = `<i class="fas fa-exclamation-circle mr-1"></i> ${escapeHtml(e.message)}`;
+                        fixityResult.classList.remove('hidden');
+                    }
+
+                    fixityButton.disabled = false;
+                    fixityButton.innerHTML = '<i class="fas fa-shield-alt mr-1"></i> Fixity Check';
+                });
             }
             
             // Helper functions

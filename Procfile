@@ -1,1 +1,1 @@
-web: cd api && gunicorn app:app
+web: cd api && gunicorn app:app --workers=2 --timeout=120 --bind=0.0.0.0:$PORT
