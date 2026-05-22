@@ -1,7 +1,7 @@
 from config import Config
 from auth import require_api_key
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -151,6 +151,11 @@ def _process_document(document_id: str, file_path: str, content_type: str, filen
 
 @app.route("/")
 def home():
+    return render_template("index.html")
+
+
+@app.route("/api")
+def api_info():
     return jsonify({
         "system": "ArchivAI",
         "description": "Blockchain + AI Digital Preservation Framework",
