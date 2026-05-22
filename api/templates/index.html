@@ -684,7 +684,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function loadDocument(id) {
     currentDoc = id;
     welcomePanel.classList.add('hidden');
-    detailView.style.display = 'flex';
+    detailView.classList.remove('hidden');
 
     // refresh active state in list
     docList.querySelectorAll('.doc-item').forEach(el => el.classList.toggle('active', el.dataset.id === id));
