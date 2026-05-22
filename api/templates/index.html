@@ -1,948 +1,911 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArchivAI - Document Processing with AI and Blockchain</title>
-    
-    <!-- Updated Tailwind CSS link -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    
-    <!-- Updated Font Awesome link -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Inline critical styles to ensure basic styling even if CDN fails -->
-    <style>
-        /* Fallback styles */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f3f4f6;
-            color: #111827;
-        }
-        
-        header {
-            background-color: #1e40af;
-            color: white;
-            padding: 1rem;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-        
-        .card {
-            background: white;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-        }
-        .pronom-badge {
-            display: inline-flex; align-items: center; gap: 4px;
-            background: #f0f9ff; border: 1px solid #bae6fd;
-            color: #0369a1; border-radius: 4px; padding: 2px 8px;
-            font-size: 0.75rem; font-family: monospace;
-        }
-        .entity-chip {
-            display: inline-block; padding: 2px 8px;
-            border-radius: 999px; font-size: 0.7rem; font-weight: 600;
-            margin: 2px;
-        }
-        .entity-PERSON     { background:#dbeafe; color:#1e40af; }
-        .entity-ORGANIZATION { background:#d1fae5; color:#065f46; }
-        .entity-PLACE,
-        .entity-LOCATION   { background:#fef3c7; color:#92400e; }
-        .entity-DATE,
-        .entity-TIME       { background:#ede9fe; color:#5b21b6; }
-        .entity-LAW,
-        .entity-LEGAL_REFERENCE { background:#fee2e2; color:#991b1b; }
-        .entity-EMAIL      { background:#f3f4f6; color:#374151; }
-        .entity-default    { background:#e5e7eb; color:#374151; }
-        .premis-timeline { border-left: 3px solid #3b82f6; margin-left: 8px; padding-left: 16px; }
-        .premis-event { position: relative; margin-bottom: 12px; }
-        .premis-event::before {
-            content: ''; position: absolute; left: -22px; top: 6px;
-            width: 10px; height: 10px; border-radius: 50%;
-            background: #3b82f6; border: 2px solid white;
-            box-shadow: 0 0 0 2px #3b82f6;
-        }
-        .premis-event.failure::before { background: #ef4444; box-shadow: 0 0 0 2px #ef4444; }
-        
-        button, .button {
-            background-color: #2563eb;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 0.25rem;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        button:hover, .button:hover {
-            background-color: #1d4ed8;
-        }
-        
-        button:disabled, .button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .upload-area {
-            border: 2px dashed #93c5fd;
-            border-radius: 0.5rem;
-            padding: 2rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .upload-area:hover {
-            background-color: #eff6ff;
-        }
-        
-        /* Flexbox and Grid layouts */
-        .flex {
-            display: flex;
-        }
-        
-        .justify-between {
-            justify-content: space-between;
-        }
-        
-        .items-center {
-            align-items: center;
-        }
-        
-        /* Fix for Tailwind responsive classes */
-        .flex-col {
-            flex-direction: column;
-        }
-        
-        .space-x-6 > * + * {
-            margin-left: 1.5rem;
-        }
-        
-        .space-y-2 > * + * {
-            margin-top: 0.5rem;
-        }
-        
-        /* Responsive grid */
-        @media (min-width: 768px) {
-            .md\:flex-row {
-                flex-direction: row !important;
-            }
-            
-            .md\:w-1\/2 {
-                width: 50% !important;
-            }
-            
-            .md\:pr-8 {
-                padding-right: 2rem !important;
-            }
-            
-            .md\:mb-0 {
-                margin-bottom: 0 !important;
-            }
-            
-            .md\:grid-cols-2 {
-                display: grid !important;
-                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-                gap: 2rem !important;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ArchivAI — Digital Preservation with AI &amp; Blockchain</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --navy:        #0d2137;
+      --navy-mid:    #1a3a5c;
+      --navy-light:  #2a527a;
+      --gold:        #c9a84c;
+      --gold-light:  #f0e0a0;
+      --cream:       #f8f6f2;
+      --white:       #ffffff;
+      --border:      #e4e0da;
+      --text:        #1a1714;
+      --muted:       #6b645e;
+      --ok:          #166534;
+      --ok-bg:       #dcfce7;
+      --warn:        #92400e;
+      --warn-bg:     #fef3c7;
+      --err:         #991b1b;
+      --err-bg:      #fee2e2;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--cream); color: var(--text); font-size: 14px; line-height: 1.6; }
+    a { color: var(--gold); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Layout ─────────────────────────────────────── */
+    .container { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .demo-grid { display: grid; grid-template-columns: 380px 1fr; gap: 24px; align-items: start; }
+    @media (max-width: 860px) { .demo-grid, .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+
+    /* ── Header ─────────────────────────────────────── */
+    .site-header {
+      background: var(--navy);
+      border-bottom: 3px solid var(--gold);
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,.3);
+    }
+    .header-inner { display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; max-width: 1160px; margin: 0 auto; }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-mark { width: 34px; height: 34px; background: var(--gold); border-radius: 6px; display: grid; place-items: center; color: var(--navy); font-weight: 700; font-size: 16px; letter-spacing: -1px; }
+    .logo-text { color: var(--white); font-weight: 700; font-size: 18px; letter-spacing: -.3px; }
+    .logo-sub { color: #8aafd4; font-size: 11px; font-weight: 400; display: block; line-height: 1; }
+    .site-nav { display: flex; gap: 28px; list-style: none; }
+    .site-nav a { color: #b8cde0; font-size: 13px; font-weight: 500; transition: color .15s; }
+    .site-nav a:hover { color: var(--gold); text-decoration: none; }
+
+    /* ── Hero ────────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 60%, #1e4d6e 100%);
+      color: var(--white);
+      padding: 64px 0 48px;
+      position: relative; overflow: hidden;
+    }
+    .hero::after {
+      content: '';
+      position: absolute; right: -80px; top: -80px;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,168,76,.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-label { display: inline-flex; align-items: center; gap: 6px; background: rgba(201,168,76,.15); border: 1px solid rgba(201,168,76,.4); color: var(--gold-light); font-size: 11px; font-weight: 600; letter-spacing: .8px; text-transform: uppercase; padding: 4px 12px; border-radius: 100px; margin-bottom: 20px; }
+    .hero h1 { font-size: 36px; font-weight: 700; line-height: 1.2; max-width: 560px; margin-bottom: 16px; }
+    .hero h1 span { color: var(--gold); }
+    .hero p { color: #a8c4d8; font-size: 16px; max-width: 520px; margin-bottom: 32px; line-height: 1.7; }
+    .hero-cta { display: inline-flex; align-items: center; gap: 8px; background: var(--gold); color: var(--navy); font-weight: 700; font-size: 14px; padding: 12px 24px; border-radius: 8px; transition: background .15s; }
+    .hero-cta:hover { background: var(--gold-light); text-decoration: none; }
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 48px; padding-top: 36px; border-top: 1px solid rgba(255,255,255,.1); }
+    .stat-item { text-align: center; }
+    .stat-num { font-size: 28px; font-weight: 700; color: var(--gold); font-variant-numeric: tabular-nums; }
+    .stat-label { color: #7fa8c4; font-size: 12px; margin-top: 2px; text-transform: uppercase; letter-spacing: .6px; }
+
+    /* ── Cards ───────────────────────────────────────── */
+    .card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+    .card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .card-header h3 { font-size: 14px; font-weight: 600; color: var(--text); }
+    .card-body { padding: 20px; }
+
+    /* ── Upload area ─────────────────────────────────── */
+    .drop-zone {
+      border: 2px dashed var(--border); border-radius: 10px;
+      padding: 28px 20px; text-align: center;
+      cursor: pointer; transition: all .2s;
+      background: var(--cream);
+    }
+    .drop-zone:hover, .drop-zone.dragover { border-color: var(--gold); background: #fdf9f0; }
+    .drop-zone .icon { font-size: 28px; color: var(--gold); margin-bottom: 10px; }
+    .drop-zone p { color: var(--muted); font-size: 13px; margin-bottom: 10px; }
+    .file-pill { display: flex; align-items: center; gap: 8px; background: #f0f4f8; border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; margin-top: 12px; }
+    .file-pill .fname { flex: 1; font-size: 12px; font-weight: 500; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .file-pill .remove { background: none; border: none; color: var(--muted); cursor: pointer; padding: 0 2px; font-size: 12px; }
+    .file-pill .remove:hover { color: var(--err); }
+
+    /* ── Buttons ─────────────────────────────────────── */
+    .btn { display: inline-flex; align-items: center; gap: 6px; font-family: inherit; font-size: 13px; font-weight: 600; padding: 9px 18px; border-radius: 8px; border: none; cursor: pointer; transition: all .15s; }
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
+    .btn-primary { background: var(--navy); color: var(--white); }
+    .btn-primary:hover:not(:disabled) { background: var(--navy-mid); }
+    .btn-gold { background: var(--gold); color: var(--navy); }
+    .btn-gold:hover:not(:disabled) { background: #b8932e; }
+    .btn-green { background: #16a34a; color: var(--white); }
+    .btn-green:hover:not(:disabled) { background: #15803d; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-outline:hover:not(:disabled) { background: var(--cream); border-color: var(--navy); }
+    .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
+    .btn-full { width: 100%; justify-content: center; }
+    .btn-icon { padding: 7px 10px; }
+
+    /* ── Document list ───────────────────────────────── */
+    .doc-list { max-height: 340px; overflow-y: auto; }
+    .doc-list::-webkit-scrollbar { width: 4px; }
+    .doc-list::-webkit-scrollbar-track { background: transparent; }
+    .doc-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    .doc-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; cursor: pointer; border-bottom: 1px solid #f0eeeb; transition: background .12s; }
+    .doc-item:last-child { border-bottom: none; }
+    .doc-item:hover { background: var(--cream); }
+    .doc-item.active { background: #f0f4fa; border-left: 3px solid var(--navy); }
+    .doc-item .doc-icon { width: 32px; height: 32px; border-radius: 6px; background: #e8f0f8; display: grid; place-items: center; color: var(--navy-mid); font-size: 13px; flex-shrink: 0; }
+    .doc-item .doc-info { flex: 1; min-width: 0; }
+    .doc-item .doc-name { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
+    .doc-item .doc-meta { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+    /* ── Status badges ───────────────────────────────── */
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 100px; font-size: 11px; font-weight: 600; }
+    .badge-green  { background: var(--ok-bg);   color: var(--ok); }
+    .badge-amber  { background: var(--warn-bg);  color: var(--warn); }
+    .badge-red    { background: var(--err-bg);   color: var(--err); }
+    .badge-gray   { background: #f0eeeb;         color: var(--muted); }
+    .badge-navy   { background: #e0e8f0;         color: var(--navy); }
+
+    /* ── PRONOM badge ────────────────────────────────── */
+    .pronom-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #eff6ff; border: 1px solid #bfdbfe;
+      color: #1d4ed8; font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 500; padding: 3px 9px;
+      border-radius: 5px; text-decoration: none;
+    }
+    .pronom-badge:hover { background: #dbeafe; text-decoration: none; }
+    .pronom-badge i { font-size: 9px; }
+
+    /* ── Entity chips ────────────────────────────────── */
+    .entity-chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 100px; font-size: 11px; font-weight: 600; margin: 2px; cursor: default; }
+    .entity-chip .etype { opacity: .65; font-weight: 400; font-size: 10px; }
+    .chip-PERSON           { background: #dbeafe; color: #1e40af; }
+    .chip-ORGANIZATION     { background: #dcfce7; color: #166534; }
+    .chip-PLACE,
+    .chip-LOCATION         { background: #fef3c7; color: #92400e; }
+    .chip-DATE,
+    .chip-TIME             { background: #ede9fe; color: #5b21b6; }
+    .chip-LEGAL_REFERENCE,
+    .chip-LAW              { background: #fee2e2; color: #991b1b; }
+    .chip-NATIONALITY_OR_GROUP { background: #ccfbf1; color: #0f766e; }
+    .chip-FACILITY         { background: #e0e7ff; color: #3730a3; }
+    .chip-EMAIL            { background: #f3f4f6; color: #374151; }
+    .chip-default          { background: #f0eeeb; color: var(--muted); }
+
+    /* ── Tabs ────────────────────────────────────────── */
+    .tabs { display: flex; border-bottom: 2px solid var(--border); gap: 0; }
+    .tab-btn { background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -2px; padding: 10px 16px; font-family: inherit; font-size: 13px; font-weight: 500; color: var(--muted); cursor: pointer; transition: all .15s; white-space: nowrap; }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--navy); border-bottom-color: var(--navy); font-weight: 600; }
+    .tab-panel { display: none; padding: 20px; }
+    .tab-panel.active { display: block; }
+
+    /* ── Blockchain seal ─────────────────────────────── */
+    .bc-seal {
+      border: 2px solid; border-radius: 12px; padding: 16px;
+      display: flex; gap: 14px; align-items: flex-start;
+    }
+    .bc-seal.verified { border-color: #86efac; background: #f0fdf4; }
+    .bc-seal.pending  { border-color: #fde68a; background: #fffbeb; }
+    .bc-seal.error    { border-color: #fca5a5; background: #fef2f2; }
+    .bc-seal-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+    .bc-seal.verified .bc-seal-icon { color: #16a34a; }
+    .bc-seal.pending  .bc-seal-icon { color: #d97706; }
+    .bc-seal.error    .bc-seal-icon { color: #dc2626; }
+    .bc-seal-title { font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+    .bc-seal.verified .bc-seal-title { color: #15803d; }
+    .bc-seal.pending  .bc-seal-title { color: #b45309; }
+    .bc-seal.error    .bc-seal-title { color: #b91c1c; }
+    .bc-detail { font-size: 12px; color: var(--muted); margin: 3px 0; }
+    .bc-detail strong { color: var(--text); font-weight: 600; }
+    .bc-hash { font-family: 'JetBrains Mono', monospace; font-size: 11px; word-break: break-all; color: var(--navy-light); background: rgba(0,0,0,.04); padding: 4px 8px; border-radius: 5px; display: block; margin-top: 6px; }
+    .bc-ai-note { display: flex; align-items: center; gap: 6px; margin-top: 10px; padding: 8px 10px; background: rgba(0,0,0,.04); border-radius: 7px; font-size: 11px; color: var(--muted); }
+
+    /* ── PREMIS timeline ─────────────────────────────── */
+    .timeline { position: relative; padding-left: 22px; }
+    .timeline::before { content: ''; position: absolute; left: 7px; top: 8px; bottom: 8px; width: 2px; background: var(--border); }
+    .t-event { position: relative; margin-bottom: 16px; }
+    .t-dot { position: absolute; left: -22px; top: 4px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--white); box-shadow: 0 0 0 2px; }
+    .t-dot.ok  { background: #16a34a; box-shadow: 0 0 0 2px #16a34a; }
+    .t-dot.err { background: #dc2626; box-shadow: 0 0 0 2px #dc2626; }
+    .t-head { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+    .t-type { font-size: 12px; font-weight: 700; color: var(--navy); }
+    .t-time { font-size: 11px; color: var(--muted); }
+    .t-detail { font-size: 12px; color: var(--muted); }
+    .t-outcome { font-size: 11px; font-style: italic; color: var(--muted); margin-top: 1px; }
+
+    /* ── Field rows ──────────────────────────────────── */
+    .field { display: flex; padding: 7px 0; border-bottom: 1px solid #f5f3f0; gap: 12px; }
+    .field:last-child { border-bottom: none; }
+    .field-label { font-size: 12px; color: var(--muted); font-weight: 500; min-width: 120px; flex-shrink: 0; }
+    .field-value { font-size: 12px; color: var(--text); font-weight: 500; word-break: break-word; }
+    .field-mono  { font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+
+    /* ── Tags ────────────────────────────────────────── */
+    .tag { display: inline-block; background: #e8f0f8; color: var(--navy-mid); font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 100px; margin: 2px; }
+
+    /* ── Alert / toast ───────────────────────────────── */
+    .alert { padding: 10px 14px; border-radius: 8px; font-size: 12px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+    .alert-blue   { background: #eff6ff; color: #1d4ed8; }
+    .alert-green  { background: var(--ok-bg);   color: var(--ok); }
+    .alert-red    { background: var(--err-bg);   color: var(--err); }
+    .alert-amber  { background: var(--warn-bg);  color: var(--warn); }
+
+    /* ── Standards bar ───────────────────────────────── */
+    .standards-bar { background: var(--white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 20px 0; }
+    .std-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .std-badge { display: flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; border: 1.5px solid; }
+    .std-tna  { border-color: #bfdbfe; background: #eff6ff; color: #1e40af; }
+    .std-prem { border-color: #d1fae5; background: #f0fdf4; color: #166534; }
+    .std-ric  { border-color: #ede9fe; background: #f5f3ff; color: #5b21b6; }
+    .std-oais { border-color: #fde68a; background: #fffbeb; color: #92400e; }
+    .std-desc { font-size: 11px; color: var(--muted); text-align: center; }
+
+    /* ── Welcome panel ───────────────────────────────── */
+    .welcome-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 64px 32px; text-align: center; color: var(--muted); min-height: 300px; }
+    .welcome-panel .w-icon { font-size: 42px; color: var(--border); margin-bottom: 16px; }
+    .welcome-panel h4 { font-size: 16px; font-weight: 600; color: #9c9590; margin-bottom: 8px; }
+    .welcome-panel p { font-size: 13px; max-width: 260px; }
+
+    /* ── Misc ────────────────────────────────────────── */
+    .section-title { font-size: 22px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+    .section-sub   { font-size: 14px; color: var(--muted); margin-bottom: 32px; }
+    .divider { height: 1px; background: var(--border); margin: 16px 0; }
+    .mt-4  { margin-top: 16px; }
+    .mt-2  { margin-top: 8px; }
+    .mb-4  { margin-bottom: 16px; }
+    .gap-8 { gap: 8px; }
+    .flex  { display: flex; }
+    .flex-wrap { flex-wrap: wrap; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .hidden { display: none !important; }
+    .truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 12px; background: #f0eeeb; padding: 1px 6px; border-radius: 4px; }
+    .api-endpoint { padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .api-endpoint:last-child { border-bottom: none; }
+    .method { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-right: 8px; }
+    .method-get  { background: #dcfce7; color: #166534; }
+    .method-post { background: #dbeafe; color: #1e40af; }
+    .ep-path { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; }
+    .ep-desc { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .feature-card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 20px; display: flex; gap: 14px; }
+    .feature-icon { width: 38px; height: 38px; border-radius: 8px; background: #e8f0f8; display: grid; place-items: center; color: var(--navy); font-size: 15px; flex-shrink: 0; }
+    .feature-title { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .feature-desc  { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .input-field { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-family: inherit; font-size: 13px; color: var(--text); background: var(--white); transition: border-color .15s; }
+    .input-field:focus { outline: none; border-color: var(--navy); }
+    .input-label { font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 5px; }
+    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.3); border-top-color: currentColor; border-radius: 50%; animation: spin .7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    footer { background: var(--navy); color: #a8c4d8; }
+    .footer-inner { max-width: 1160px; margin: 0 auto; padding: 36px 24px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px; }
+    @media (max-width: 700px) { .footer-inner { grid-template-columns: 1fr; } }
+    .footer-brand .logo-text { font-size: 20px; margin-bottom: 6px; display: block; }
+    .footer-brand p { font-size: 12px; line-height: 1.6; }
+    .footer-heading { font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+    .footer-list { list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 12px; }
+    .footer-copy { border-top: 1px solid rgba(255,255,255,.08); padding: 16px 24px; text-align: center; font-size: 11px; color: #5a7a96; max-width: 1160px; margin: 0 auto; }
+  </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="bg-blue-800 text-white">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex justify-between items-center">
-                <div>
-                    <h1 class="text-3xl font-bold">ArchivAI</h1>
-                    <p class="text-blue-200">Document Processing with AI and Blockchain</p>
-                </div>
-                <nav>
-                    <ul class="flex space-x-6">
-                        <li><a href="#demo" class="text-white hover:text-blue-300">Demo</a></li>
-                        <li><a href="#documentation" class="text-white hover:text-blue-300">Documentation</a></li>
-                        <li><a href="#about" class="text-white hover:text-blue-300">About</a></li>
-                    </ul>
-                </nav>
+
+<!-- ══════════════ HEADER ══════════════ -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-mark">AI</div>
+      <div>
+        <span class="logo-text">ArchivAI</span>
+        <span class="logo-sub">Digital Preservation Framework</span>
+      </div>
+    </div>
+    <nav>
+      <ul class="site-nav">
+        <li><a href="#demo">Demo</a></li>
+        <li><a href="#standards">Standards</a></li>
+        <li><a href="#documentation">API</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="https://github.com/Noah-Banjo/ArchivAI" target="_blank"><i class="fab fa-github"></i> GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- ══════════════ HERO ══════════════ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-label"><i class="fas fa-shield-alt"></i> iPRES 2025 · Wellington, Aotearoa New Zealand</div>
+    <h1>Trustworthy Archives Through <span>AI + Blockchain</span></h1>
+    <p>ArchivAI unifies AI-powered metadata extraction with cryptographic blockchain verification — making every document's content, provenance, and processing history permanently auditable.</p>
+    <a href="#demo" class="hero-cta"><i class="fas fa-play-circle"></i> Try the Live Demo</a>
+    <div class="stats-row">
+      <div class="stat-item">
+        <div class="stat-num" id="stat-blocks">—</div>
+        <div class="stat-label">Blockchain Blocks</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" id="stat-docs">—</div>
+        <div class="stat-label">Documents Preserved</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" id="stat-status">Live</div>
+        <div class="stat-label">System Status</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ STANDARDS BAR ══════════════ -->
+<div class="standards-bar" id="standards">
+  <div class="container">
+    <div class="grid-4">
+      <div class="std-item">
+        <div class="std-badge std-tna"><i class="fas fa-fingerprint"></i> PRONOM</div>
+        <div class="std-desc">File format identification<br>via The National Archives registry</div>
+      </div>
+      <div class="std-item">
+        <div class="std-badge std-prem"><i class="fas fa-history"></i> PREMIS 3.0</div>
+        <div class="std-desc">Full preservation event<br>lifecycle logging</div>
+      </div>
+      <div class="std-item">
+        <div class="std-badge std-ric"><i class="fas fa-code"></i> ICA RiC</div>
+        <div class="std-desc">Records in Contexts<br>JSON-LD export</div>
+      </div>
+      <div class="std-item">
+        <div class="std-badge std-oais"><i class="fas fa-layer-group"></i> OAIS</div>
+        <div class="std-desc">Ingest / AIP / access<br>workflow alignment</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ DEMO ══════════════ -->
+<section id="demo" style="padding: 48px 0;">
+  <div class="container">
+    <h2 class="section-title">Interactive Demo</h2>
+    <p class="section-sub">Upload any document — the system extracts named entities, identifies the file format via PRONOM, registers it on the blockchain with AI metadata cryptographically bound, and logs every action as a PREMIS preservation event.</p>
+
+    <div class="demo-grid">
+
+      <!-- Left panel -->
+      <div style="display:flex; flex-direction:column; gap:16px;">
+
+        <!-- Upload card -->
+        <div class="card">
+          <div class="card-header"><h3><i class="fas fa-upload" style="color:var(--gold); margin-right:6px;"></i>Ingest Document</h3></div>
+          <div class="card-body" style="display:flex; flex-direction:column; gap:12px;">
+            <div id="drop-zone" class="drop-zone">
+              <div class="icon"><i class="fas fa-cloud-upload-alt"></i></div>
+              <p>Drag &amp; drop or click to select</p>
+              <input type="file" id="file-input" style="display:none">
+              <button class="btn btn-outline btn-sm" onclick="document.getElementById('file-input').click()">Browse files</button>
             </div>
+            <div id="file-pill" class="file-pill hidden">
+              <i class="fas fa-file" style="color:var(--navy-mid); font-size:13px;"></i>
+              <span class="fname" id="file-name"></span>
+              <button class="remove" id="remove-file"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="api-key-row" class="hidden">
+              <div class="input-label">API Key <span style="color:var(--err)">*</span></div>
+              <input type="password" id="api-key-input" class="input-field" placeholder="X-API-Key">
+            </div>
+            <button id="upload-btn" class="btn btn-gold btn-full" disabled>
+              <i class="fas fa-lock"></i> Upload &amp; Preserve
+            </button>
+            <div id="upload-status" class="hidden"></div>
+          </div>
         </div>
-    </header>
 
-    <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8">
-        <!-- Hero Section -->
-        <section class="bg-white rounded-lg shadow-md p-8 mb-8">
-            <div class="flex flex-col md:flex-row items-center">
-                <div class="md:w-1/2 mb-6 md:mb-0 md:pr-8">
-                    <h2 class="text-3xl font-bold mb-4">Intelligent Document Management</h2>
-                    <p class="text-lg mb-6">ArchivAI automatically processes your documents using AI for metadata extraction and blockchain for verification. Upload a document and let our system handle the rest.</p>
-                    <a href="#demo" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded inline-block">Try it now</a>
-                </div>
-                <div class="md:w-1/2">
-                    <img src="https://via.placeholder.com/600x400" alt="Document processing illustration" class="rounded-lg shadow-md"/>
-                </div>
+        <!-- Document list -->
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="fas fa-archive" style="color:var(--gold); margin-right:6px;"></i>Preserved Documents</h3>
+            <button id="refresh-btn" class="btn btn-outline btn-sm btn-icon" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+          </div>
+          <div id="doc-list" class="doc-list">
+            <div style="padding:32px; text-align:center; color:var(--muted); font-size:13px;">
+              <i class="fas fa-spinner spinner" style="color:var(--muted)"></i> Loading…
             </div>
-        </section>
-
-        <!-- Demo Section -->
-        <section id="demo" class="bg-white rounded-lg shadow-md p-8 mb-8">
-            <h2 class="text-2xl font-bold mb-6 pb-2 border-b">Interactive Demo</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Upload Section -->
-                <div class="bg-gray-50 p-6 rounded-lg shadow-inner">
-                    <h3 class="text-xl font-semibold mb-4">Upload Document</h3>
-                    <div id="drop-area" class="border-2 border-dashed border-blue-300 rounded-lg p-8 text-center cursor-pointer hover:bg-blue-50 transition-all">
-                        <i class="fas fa-cloud-upload-alt text-4xl text-blue-500 mb-4"></i>
-                        <p class="mb-4">Drag and drop your document here or click to browse</p>
-                        <input type="file" id="file-input" class="hidden">
-                        <button id="browse-button" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">Select File</button>
-                    </div>
-                    <div id="selected-file" class="mt-4 hidden">
-                        <div class="flex items-center p-3 bg-blue-100 rounded">
-                            <i class="fas fa-file-alt text-blue-600 mr-2"></i>
-                            <span id="file-name" class="truncate flex-grow"></span>
-                            <button id="remove-file" class="text-blue-600 hover:text-blue-800">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <!-- API key (shown only when server requires it) -->
-                    <div id="api-key-row" class="mt-3 hidden">
-                        <label class="block text-sm text-gray-600 mb-1">API Key <span class="text-red-500">*</span></label>
-                        <input type="password" id="api-key-input" placeholder="Enter X-API-Key"
-                               class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
-                    </div>
-                    <button id="upload-button" disabled class="mt-4 bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded disabled:opacity-50 disabled:cursor-not-allowed w-full">
-                        Upload Document
-                    </button>
-                    <div id="upload-status" class="mt-4 hidden p-3 rounded"></div>
-                </div>
-                
-                <!-- Results Section -->
-                <div class="bg-gray-50 p-6 rounded-lg shadow-inner">
-                    <h3 class="text-xl font-semibold mb-4">Documents</h3>
-                    <button id="refresh-button" class="mb-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
-                        <i class="fas fa-sync-alt mr-1"></i> Refresh List
-                    </button>
-                    <div id="documents-list" class="h-64 overflow-y-auto border border-gray-200 rounded p-2 bg-white">
-                        <p class="text-gray-500 italic text-center mt-8">No documents loaded yet</p>
-                    </div>
-                    
-                    <div id="document-details" class="mt-6 hidden">
-                        <h4 class="font-semibold text-lg border-b pb-1 mb-2">Document Details</h4>
-                        <div id="document-details-content"></div>
-
-                        <!-- Action Buttons -->
-                        <div id="document-actions" class="mt-4 flex flex-wrap gap-2">
-                            <button id="download-document" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded text-sm">
-                                <i class="fas fa-download mr-1"></i> Download
-                            </button>
-                            <button id="fixity-check-button" class="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded text-sm">
-                                <i class="fas fa-shield-alt mr-1"></i> Fixity Check
-                            </button>
-                            <a id="ric-metadata-link" href="#" target="_blank"
-                               class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded text-sm inline-flex items-center">
-                                <i class="fas fa-code mr-1"></i> RiC JSON-LD
-                            </a>
-                        </div>
-                        <div id="fixity-result" class="mt-3 hidden p-3 rounded text-sm"></div>
-
-                        <!-- PREMIS Events Timeline -->
-                        <div id="premis-section" class="mt-4 hidden">
-                            <h5 class="font-semibold mb-2">Preservation Event Log (PREMIS 3.0)</h5>
-                            <div id="premis-timeline" class="premis-timeline text-sm"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Documentation Section -->
-        <section id="documentation" class="bg-white rounded-lg shadow-md p-8 mb-8">
-            <h2 class="text-2xl font-bold mb-6 pb-2 border-b">API Documentation</h2>
-            
-            <div class="mb-8">
-                <h3 class="text-xl font-semibold mb-3">Base URL</h3>
-                <div class="bg-gray-100 p-3 rounded-md font-mono text-sm" id="api-base-url">https://archivai-demo.onrender.com</div>
-            </div>
-            
-            <div class="mb-8">
-                <h3 class="text-xl font-semibold mb-3">Endpoints</h3>
-                
-                <!-- Endpoint 1 -->
-                <div class="mb-6 border-l-4 border-blue-500 pl-4">
-                    <h4 class="font-bold mb-2">GET /</h4>
-                    <p class="mb-2">Check if the API is running.</p>
-                    <div class="bg-gray-100 p-3 rounded-md font-mono text-sm mb-2">
-                        // Example Response
-                        {
-                          "message": "Welcome to ArchivAI API"
-                        }
-                    </div>
-                </div>
-                
-                <!-- Endpoint 2 -->
-                <div class="mb-6 border-l-4 border-green-500 pl-4">
-                    <h4 class="font-bold mb-2">POST /api/documents/upload-simple</h4>
-                    <p class="mb-2">Upload a document for processing with AI and blockchain verification.</p>
-                    <p class="mb-2"><strong>Content-Type:</strong> multipart/form-data</p>
-                    <p class="mb-2"><strong>Parameters:</strong></p>
-                    <ul class="list-disc pl-6 mb-2">
-                        <li><code>file</code> - The document file to upload</li>
-                    </ul>
-                    <div class="bg-gray-100 p-3 rounded-md font-mono text-sm mb-2">
-                        // Example Response
-                        {
-                          "status": "success",
-                          "documentId": "123e4567-e89b-12d3-a456-426614174000",
-                          "filename": "document.pdf",
-                          "path": "documents/123e4567-e89b-12d3-a456-426614174000/document.pdf",
-                          "dateCreated": "2025-03-29T16:39:47.000Z"
-                        }
-                    </div>
-                </div>
-                
-                <!-- Endpoint 3 -->
-                <div class="mb-6 border-l-4 border-purple-500 pl-4">
-                    <h4 class="font-bold mb-2">GET /api/documents</h4>
-                    <p class="mb-2">Get a list of all uploaded documents.</p>
-                    <div class="bg-gray-100 p-3 rounded-md font-mono text-sm mb-2">
-                        // Example Response
-                        {
-                          "status": "success",
-                          "count": 1,
-                          "documents": [
-                            {
-                              "documentId": "123e4567-e89b-12d3-a456-426614174000",
-                              "filename": "document.pdf",
-                              "contentType": "application/pdf",
-                              "fileSize": 123456,
-                              "dateCreated": "2025-03-29T16:39:47.000Z",
-                              "title": "document.pdf",
-                              "status": "processed",
-                              "tags": ["contract", "legal", "agreement"]
-                            }
-                          ]
-                        }
-                    </div>
-                </div>
-                
-                <!-- Endpoint 4 -->
-                <div class="mb-6 border-l-4 border-yellow-500 pl-4">
-                    <h4 class="font-bold mb-2">GET /api/documents/{documentId}</h4>
-                    <p class="mb-2">Get detailed information about a specific document.</p>
-                    <p class="mb-2"><strong>Parameters:</strong></p>
-                    <ul class="list-disc pl-6 mb-2">
-                        <li><code>documentId</code> - The ID of the document to retrieve</li>
-                    </ul>
-                    <div class="bg-gray-100 p-3 rounded-md font-mono text-sm mb-2">
-                        // Example Response
-                        {
-                          "status": "success",
-                          "document": {
-                            "documentId": "123e4567-e89b-12d3-a456-426614174000",
-                            "filename": "document.pdf",
-                            "path": "documents/123e4567-e89b-12d3-a456-426614174000/document.pdf",
-                            "contentType": "application/pdf",
-                            "fileSize": 123456,
-                            "dateCreated": "2025-03-29T16:39:47.000Z",
-                            "dateModified": "2025-03-29T16:40:12.000Z",
-                            "status": "processed",
-                            "title": "document.pdf",
-                            "description": "",
-                            "tags": ["contract", "legal", "agreement"],
-                            "aiMetadata": {
-                              "entities": ["Company A", "Company B", "John Doe"],
-                              "summary": "This is a legal agreement between Company A and Company B.",
-                              "language": "english",
-                              "characterCount": 12345
-                            },
-                            "blockchainVerification": {
-                              "status": "verified",
-                              "transactionId": "0x1234567890abcdef",
-                              "timestamp": "2025-03-29T16:40:10.000Z",
-                              "documentHash": "0xabcdef1234567890"
-                            }
-                          }
-                        }
-                    </div>
-                </div>
-                
-                <!-- Endpoint 5 -->
-                <div class="mb-6 border-l-4 border-red-500 pl-4">
-                    <h4 class="font-bold mb-2">GET /api/documents/{documentId}/download</h4>
-                    <p class="mb-2">Download the original document file.</p>
-                    <p class="mb-2"><strong>Parameters:</strong></p>
-                    <ul class="list-disc pl-6 mb-2">
-                        <li><code>documentId</code> - The ID of the document to download</li>
-                    </ul>
-                    <p class="mb-2"><strong>Response:</strong> The original document file with appropriate Content-Type header</p>
-                </div>
-            </div>
-        </section>
-        
-        <!-- About Section -->
-        <section id="about" class="bg-white rounded-lg shadow-md p-8 mb-8">
-            <h2 class="text-2xl font-bold mb-6 pb-2 border-b">About ArchivAI</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                    <h3 class="text-xl font-semibold mb-4">Features</h3>
-                    <ul class="space-y-2">
-                        <li class="flex items-start">
-                            <i class="fas fa-brain text-blue-600 mt-1 mr-2"></i>
-                            <span><strong>AI Processing:</strong> Automatically extract metadata, entities, and summaries from documents</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-link text-blue-600 mt-1 mr-2"></i>
-                            <span><strong>Blockchain Verification:</strong> Ensure document authenticity with immutable blockchain records</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-search text-blue-600 mt-1 mr-2"></i>
-                            <span><strong>Intelligent Tagging:</strong> Automatically categorize documents for easy retrieval</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-file-alt text-blue-600 mt-1 mr-2"></i>
-                            <span><strong>Multiple Document Types:</strong> Support for PDFs and other document formats</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-code text-blue-600 mt-1 mr-2"></i>
-                            <span><strong>API-First Design:</strong> Easy integration with existing systems</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-download text-blue-600 mt-1 mr-2"></i>
-                            <span><strong>Document Retrieval:</strong> Download and verify original documents anytime</span>
-                        </li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h3 class="text-xl font-semibold mb-4">Technologies &amp; Standards</h3>
-                    <ul class="space-y-2">
-                        <li class="flex items-start">
-                            <i class="fas fa-server text-blue-600 mt-1 mr-2"></i>
-                            <span><strong>Backend:</strong> Flask 3.x (Python)</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-robot text-blue-600 mt-1 mr-2"></i>
-                            <span><strong>NER:</strong> spaCy — PERSON, ORG, PLACE, DATE, LAW&hellip;</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-database text-blue-600 mt-1 mr-2"></i>
-                            <span><strong>Database:</strong> MongoDB Atlas (documents, blockchain chain, PREMIS events)</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-cubes text-blue-600 mt-1 mr-2"></i>
-                            <span><strong>Blockchain:</strong> Persistent SHA-256 chain — AI metadata bound to each block</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-fingerprint text-blue-600 mt-1 mr-2"></i>
-                            <span><strong>PRONOM:</strong> File format identification via The National Archives registry</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-history text-blue-600 mt-1 mr-2"></i>
-                            <span><strong>PREMIS 3.0:</strong> Full preservation event lifecycle logging</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-code text-blue-600 mt-1 mr-2"></i>
-                            <span><strong>ICA RiC:</strong> JSON-LD metadata aligned with Records in Contexts ontology</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-blue-900 text-white py-8">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-4 md:mb-0">
-                    <h3 class="text-xl font-bold">ArchivAI</h3>
-                    <p class="text-blue-300">Document Intelligence Platform</p>
-                </div>
-                <div>
-                    <p>&copy; 2025 ArchivAI. All rights reserved.</p>
-                </div>
-            </div>
+          </div>
         </div>
-    </footer>
 
-    <!-- JavaScript -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Auto-detect: same origin works on Render, localhost, or any deployment
-            const API_BASE_URL = window.location.origin;
+      </div>
 
-            const apiBaseUrlElement = document.getElementById('api-base-url');
-            if (apiBaseUrlElement) apiBaseUrlElement.textContent = API_BASE_URL;
+      <!-- Right panel: detail -->
+      <div class="card" style="min-height:520px;">
+        <!-- Welcome state -->
+        <div id="welcome-panel" class="welcome-panel">
+          <div class="w-icon"><i class="fas fa-file-shield"></i></div>
+          <h4>Select a document</h4>
+          <p>Click any document on the left to view its full preservation record, AI analysis, and blockchain audit trail.</p>
+        </div>
 
-            const fileInput          = document.getElementById('file-input');
-            const browseButton       = document.getElementById('browse-button');
-            const dropArea           = document.getElementById('drop-area');
-            const selectedFile       = document.getElementById('selected-file');
-            const fileName           = document.getElementById('file-name');
-            const removeFile         = document.getElementById('remove-file');
-            const uploadButton       = document.getElementById('upload-button');
-            const uploadStatus       = document.getElementById('upload-status');
-            const refreshButton      = document.getElementById('refresh-button');
-            const documentsList      = document.getElementById('documents-list');
-            const documentDetails    = document.getElementById('document-details');
-            const documentDetailsContent = document.getElementById('document-details-content');
-            const downloadButton     = document.getElementById('download-document');
-            const fixityButton       = document.getElementById('fixity-check-button');
-            const fixityResult       = document.getElementById('fixity-result');
-            const ricLink            = document.getElementById('ric-metadata-link');
-            const premisSection      = document.getElementById('premis-section');
-            const premisTimeline     = document.getElementById('premis-timeline');
-            const apiKeyInput        = document.getElementById('api-key-input');
-            const apiKeyRow          = document.getElementById('api-key-row');
+        <!-- Detail view (hidden until doc selected) -->
+        <div id="detail-view" class="hidden" style="display:flex; flex-direction:column; height:100%;">
+          <!-- Detail header -->
+          <div style="padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; justify-content:space-between; gap:12px;">
+            <div style="min-width:0;">
+              <div style="font-size:15px; font-weight:700; color:var(--navy); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" id="detail-title">—</div>
+              <div style="font-size:11px; color:var(--muted); margin-top:3px; font-family:'JetBrains Mono',monospace;" id="detail-id">—</div>
+            </div>
+            <div id="detail-status-badge"></div>
+          </div>
+          <!-- Tabs -->
+          <div class="tabs" style="padding:0 20px;">
+            <button class="tab-btn active" data-tab="overview"><i class="fas fa-info-circle"></i> Overview</button>
+            <button class="tab-btn" data-tab="ai"><i class="fas fa-robot"></i> AI Analysis</button>
+            <button class="tab-btn" data-tab="blockchain"><i class="fas fa-link"></i> Blockchain</button>
+            <button class="tab-btn" data-tab="events"><i class="fas fa-history"></i> Events</button>
+            <button class="tab-btn" data-tab="actions"><i class="fas fa-tools"></i> Actions</button>
+          </div>
+          <!-- Tab panels -->
+          <div style="flex:1; overflow-y:auto;">
+            <div class="tab-panel active" id="tab-overview">
+              <div id="overview-fields"></div>
+            </div>
+            <div class="tab-panel" id="tab-ai">
+              <div id="ai-content"></div>
+            </div>
+            <div class="tab-panel" id="tab-blockchain">
+              <div id="bc-content"></div>
+            </div>
+            <div class="tab-panel" id="tab-events">
+              <div id="events-content"><div style="color:var(--muted);font-size:13px;"><i class="fas fa-spinner spinner"></i> Loading events…</div></div>
+            </div>
+            <div class="tab-panel" id="tab-actions">
+              <div id="actions-content"></div>
+            </div>
+          </div>
+        </div>
 
-            let currentDocumentId = null;
-            let currentFileName   = null;
+      </div>
+    </div>
+  </div>
+</section>
 
-            // Show API key field — probe server on load
-            fetch(`${API_BASE_URL}/`).then(r => r.json()).then(() => {
-                // Try a lightweight auth probe
-                fetch(`${API_BASE_URL}/api/documents/upload-simple`, {method:'POST'})
-                    .then(r => { if (r.status === 401 && apiKeyRow) apiKeyRow.classList.remove('hidden'); });
-            }).catch(() => {});
-            
-            // File selection via browse button
-            if (browseButton && fileInput) {
-                browseButton.addEventListener('click', function() {
-                    fileInput.click();
-                });
-            }
-            
-            // File selection change handler
-            if (fileInput) {
-                fileInput.addEventListener('change', function() {
-                    handleFileSelection(this.files);
-                });
-            }
-            
-            // Drag and drop functionality
-            if (dropArea) {
-                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                    dropArea.addEventListener(eventName, preventDefaults, false);
-                });
-                
-                function preventDefaults(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                }
-                
-                ['dragenter', 'dragover'].forEach(eventName => {
-                    dropArea.addEventListener(eventName, highlight, false);
-                });
-                
-                ['dragleave', 'drop'].forEach(eventName => {
-                    dropArea.addEventListener(eventName, unhighlight, false);
-                });
-                
-                function highlight() {
-                    dropArea.classList.add('bg-blue-100');
-                }
-                
-                function unhighlight() {
-                    dropArea.classList.remove('bg-blue-100');
-                }
-                
-                dropArea.addEventListener('drop', function(e) {
-                    const dt = e.dataTransfer;
-                    const files = dt.files;
-                    handleFileSelection(files);
-                });
-            }
-            
-            // Handle selected file
-            function handleFileSelection(files) {
-                if (files && files.length > 0 && fileName && selectedFile && uploadButton) {
-                    const file = files[0];
-                    fileName.textContent = file.name;
-                    selectedFile.classList.remove('hidden');
-                    uploadButton.disabled = false;
-                }
-            }
-            
-            // Remove selected file
-            if (removeFile && fileInput && selectedFile && uploadButton) {
-                removeFile.addEventListener('click', function() {
-                    fileInput.value = '';
-                    selectedFile.classList.add('hidden');
-                    uploadButton.disabled = true;
-                });
-            }
-            
-            // Upload file
-            if (uploadButton && fileInput && uploadStatus) {
-                uploadButton.addEventListener('click', async function() {
-                    if (!fileInput.files || fileInput.files.length === 0) return;
-                    
-                    const file = fileInput.files[0];
-                    uploadButton.disabled = true;
-                    
-                    // Show loading status
-                    uploadStatus.classList.remove('hidden');
-                    uploadStatus.classList.add('bg-blue-100', 'text-blue-800');
-                    uploadStatus.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Uploading document...';
-                    
-                    try {
-                        const formData = new FormData();
-                        formData.append('file', file);
+<!-- ══════════════ API REFERENCE ══════════════ -->
+<section id="documentation" style="padding:48px 0; background:var(--white); border-top:1px solid var(--border);">
+  <div class="container">
+    <h2 class="section-title">API Reference</h2>
+    <p class="section-sub">Base URL: <code id="api-url-display">https://archivai-demo.onrender.com</code></p>
+    <div class="grid-2" style="gap:32px;">
+      <div>
+        <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.6px; color:var(--muted); margin-bottom:12px;">Public Endpoints</div>
+        <div class="api-endpoint"><span class="method method-get">GET</span><span class="ep-path">/</span><div class="ep-desc">Demo interface</div></div>
+        <div class="api-endpoint"><span class="method method-get">GET</span><span class="ep-path">/health</span><div class="ep-desc">System health — database + blockchain status</div></div>
+        <div class="api-endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/documents</span><div class="ep-desc">List all preserved documents</div></div>
+        <div class="api-endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/documents/{id}</span><div class="ep-desc">Full document record with AI metadata &amp; blockchain</div></div>
+        <div class="api-endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/documents/{id}/verify</span><div class="ep-desc">Verify document against blockchain record</div></div>
+        <div class="api-endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/documents/{id}/premis-events</span><div class="ep-desc">Full PREMIS 3.0 preservation event log</div></div>
+        <div class="api-endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/documents/{id}/metadata.jsonld</span><div class="ep-desc">ICA RiC-aligned JSON-LD linked data export</div></div>
+        <div class="api-endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/blockchain/info</span><div class="ep-desc">Chain statistics and latest block</div></div>
+      </div>
+      <div>
+        <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.6px; color:var(--muted); margin-bottom:12px;">Authenticated Endpoints</div>
+        <div style="background:var(--cream); border:1px solid var(--border); border-radius:8px; padding:12px; margin-bottom:16px; font-size:12px; color:var(--muted);">
+          <i class="fas fa-key" style="color:var(--gold);"></i> Set <code>X-API-Key</code> header when <code>API_KEY</code> env var is configured.
+        </div>
+        <div class="api-endpoint"><span class="method method-post">POST</span><span class="ep-path">/api/documents/upload-simple</span><div class="ep-desc">Ingest a document — triggers AI analysis + blockchain registration + PREMIS logging</div></div>
+        <div class="api-endpoint"><span class="method method-post">POST</span><span class="ep-path">/api/documents/{id}/fixity-check</span><div class="ep-desc">Re-hash stored file, compare against blockchain, log PREMIS fixityCheck event</div></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-                        const headers = {};
-                        const apiKey = apiKeyInput ? apiKeyInput.value.trim() : '';
-                        if (apiKey) headers['X-API-Key'] = apiKey;
+<!-- ══════════════ ABOUT ══════════════ -->
+<section id="about" style="padding:48px 0;">
+  <div class="container">
+    <h2 class="section-title">About ArchivAI</h2>
+    <p class="section-sub">Published at iPRES 2025 · Builds on and extends the ARCHANGEL project (UK National Archives / University of Surrey, 2019)</p>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:32px;">
+      <div class="feature-card"><div class="feature-icon"><i class="fas fa-robot"></i></div><div><div class="feature-title">spaCy Named Entity Recognition</div><div class="feature-desc">Extracts PERSON, ORGANIZATION, PLACE, DATE, LAW, FACILITY, NATIONALITY and more from document text using production-grade NLP.</div></div></div>
+      <div class="feature-card"><div class="feature-icon"><i class="fas fa-link"></i></div><div><div class="feature-title">Blockchain + AI Binding</div><div class="feature-desc">AI-generated metadata (entities, tags, summary) is cryptographically included in each blockchain transaction — not just the file hash.</div></div></div>
+      <div class="feature-card"><div class="feature-icon"><i class="fas fa-fingerprint"></i></div><div><div class="feature-title">PRONOM Format Identification</div><div class="feature-desc">Every document is identified against The National Archives' PRONOM registry. Persistent Unique Identifiers (PUIDs) assigned on ingest.</div></div></div>
+      <div class="feature-card"><div class="feature-icon"><i class="fas fa-history"></i></div><div><div class="feature-title">PREMIS 3.0 Event Logging</div><div class="feature-desc">Full preservation lifecycle: ingestion, characterization, message digest calculation, and fixity check events stored in structured PREMIS format.</div></div></div>
+      <div class="feature-card"><div class="feature-icon"><i class="fas fa-code"></i></div><div><div class="feature-title">ICA RiC JSON-LD Export</div><div class="feature-desc">Each document exposes a /metadata.jsonld endpoint aligned with the Records in Contexts ontology — ready for linked-data catalogue integration.</div></div></div>
+      <div class="feature-card"><div class="feature-icon"><i class="fas fa-shield-check"></i></div><div><div class="feature-title">On-Demand Fixity Checking</div><div class="feature-desc">Re-hash any stored file at any time and compare against its blockchain record. Every check is logged as a PREMIS fixityCheck event.</div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><h3>Team &amp; Citation</h3></div>
+      <div class="card-body">
+        <div class="grid-2" style="gap:24px;">
+          <div>
+            <div style="font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; margin-bottom:10px;">Authors</div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <div style="font-size:13px;"><strong>Oluseyi Noah Adebanjo</strong><br><span style="color:var(--muted); font-size:12px;">Center for Arkansas History and Culture, University of Arkansas at Little Rock<br>Fellow, William J. Clinton Presidential Library</span></div>
+              <div style="font-size:13px;"><strong>Anuoluwapo Victoria Alabi</strong><br><span style="color:var(--muted); font-size:12px;">Prairie View A&amp;M University</span></div>
+              <div style="font-size:13px;"><strong>Oyeleke Onaolapo Bolaji</strong><br><span style="color:var(--muted); font-size:12px;">Yaşar Üniversitesi, Turkey</span></div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; margin-bottom:10px;">Cite This Work</div>
+            <div style="background:var(--cream); border:1px solid var(--border); border-radius:8px; padding:12px; font-family:'JetBrains Mono',monospace; font-size:11px; line-height:1.7; color:var(--text);">Adebanjo, O. N., Alabi, A. V., &amp; Bolaji, O. O. (2025). ArchivAI Revolution: Pioneering the Fusion of Blockchain, AI, and ML for Digital Preservation. <em>Proceedings of iPRES 2025</em>, Wellington, Aotearoa New Zealand.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-                        const response = await fetch(`${API_BASE_URL}/api/documents/upload-simple`, {
-                            method: 'POST',
-                            headers,
-                            body: formData
-                        });
-                        
-                        // Handle potential response errors
-                        if (!response.ok) {
-                            throw new Error(`Server error: ${response.status}`);
-                        }
-                        
-                        const result = await response.json();
-                        
-                        if (result.status === 'success') {
-                            uploadStatus.classList.remove('bg-blue-100', 'text-blue-800');
-                            uploadStatus.classList.add('bg-green-100', 'text-green-800');
-                            uploadStatus.innerHTML = `<i class="fas fa-check-circle mr-2"></i> Document uploaded successfully!`;
-                            
-                            // Reset file input
-                            fileInput.value = '';
-                            selectedFile.classList.add('hidden');
-                            
-                            // Refresh document list
-                            fetchDocuments();
-                        } else {
-                            throw new Error(result.error || 'Unknown error');
-                        }
-                    } catch (error) {
-                        uploadStatus.classList.remove('bg-blue-100', 'text-blue-800');
-                        uploadStatus.classList.add('bg-red-100', 'text-red-800');
-                        uploadStatus.innerHTML = `<i class="fas fa-exclamation-circle mr-2"></i> Error: ${error.message}`;
-                        uploadButton.disabled = false;
-                    }
-                });
-            }
-            
-            // Refresh document list
-            if (refreshButton) {
-                refreshButton.addEventListener('click', fetchDocuments);
-            }
-            
-            // Download document
-            if (downloadButton) {
-                downloadButton.addEventListener('click', function() {
-                    if (currentDocumentId) {
-                        window.location.href = `${API_BASE_URL}/api/documents/${currentDocumentId}/download`;
-                    }
-                });
-            }
-            
-            // Fetch documents
-            async function fetchDocuments() {
-                if (!documentsList) return;
-                
-                try {
-                    documentsList.innerHTML = '<p class="text-center py-4"><i class="fas fa-spinner fa-spin mr-2"></i> Loading documents...</p>';
-                    
-                    const response = await fetch(`${API_BASE_URL}/api/documents`);
-                    
-                    // Handle potential response errors
-                    if (!response.ok) {
-                        throw new Error(`Server error: ${response.status}`);
-                    }
-                    
-                    const result = await response.json();
-                    
-                    if (result.status === 'success') {
-                        if (!result.documents || result.documents.length === 0) {
-                            documentsList.innerHTML = '<p class="text-gray-500 italic text-center mt-8">No documents found</p>';
-                            return;
-                        }
-                        
-                        let html = '';
-                        result.documents.forEach(doc => {
-                            const statusClass = getStatusClass(doc.status);
-                            
-                            html += `
-                                <div class="mb-2 p-2 border rounded hover:bg-gray-50 cursor-pointer document-item" data-id="${escapeHtml(doc.documentId)}">
-                                    <div class="flex items-center">
-                                        <i class="fas fa-file-alt text-blue-600 mr-2"></i>
-                                        <span class="truncate flex-grow">${escapeHtml(doc.filename)}</span>
-                                        <span class="ml-2 ${statusClass} text-xs px-2 py-1 rounded-full">${escapeHtml(doc.status || 'Unknown')}</span>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                        
-                        documentsList.innerHTML = html;
-                        
-                        // Add click event listeners to document items
-                        document.querySelectorAll('.document-item').forEach(item => {
-                            item.addEventListener('click', function() {
-                                const documentId = this.getAttribute('data-id');
-                                fetchDocumentDetails(documentId);
-                            });
-                        });
-                    } else {
-                        throw new Error(result.error || 'Unknown error');
-                    }
-                } catch (error) {
-                    documentsList.innerHTML = `<p class="text-red-500 text-center mt-8">Error: ${error.message}</p>`;
-                }
-            }
-            
-            // Fetch document details
-            async function fetchDocumentDetails(documentId) {
-                if (!documentDetails || !documentDetailsContent) return;
-                documentDetails.classList.add('hidden');
-                if (fixityResult) { fixityResult.classList.add('hidden'); fixityResult.textContent = ''; }
-                if (premisSection) premisSection.classList.add('hidden');
+<!-- ══════════════ FOOTER ══════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="logo-text" style="color:var(--white);">ArchivAI</span>
+      <p>Digital preservation framework combining blockchain verification with AI-powered metadata extraction. Open source under MIT licence.</p>
+    </div>
+    <div>
+      <div class="footer-heading">Standards</div>
+      <ul class="footer-list">
+        <li><a href="https://www.nationalarchives.gov.uk/pronom/" target="_blank" style="color:#a8c4d8;">PRONOM · The National Archives</a></li>
+        <li><a href="https://www.loc.gov/standards/premis/" target="_blank" style="color:#a8c4d8;">PREMIS 3.0 · Library of Congress</a></li>
+        <li><a href="https://www.ica.int/en/node/4046" target="_blank" style="color:#a8c4d8;">ICA Records in Contexts (RiC)</a></li>
+        <li><a href="https://www.iso.org/standard/57284.html" target="_blank" style="color:#a8c4d8;">OAIS · ISO 14721</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-heading">Links</div>
+      <ul class="footer-list">
+        <li><a href="https://github.com/Noah-Banjo/ArchivAI" target="_blank" style="color:#a8c4d8;"><i class="fab fa-github"></i> GitHub Repository</a></li>
+        <li><a href="/api" style="color:#a8c4d8;"><i class="fas fa-code"></i> API Status</a></li>
+        <li><a href="/health" style="color:#a8c4d8;"><i class="fas fa-heartbeat"></i> Health Check</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-copy">&copy; 2025 ArchivAI · Adebanjo, Alabi &amp; Bolaji · MIT Licence · iPRES 2025, Wellington</div>
+</footer>
 
-                try {
-                    const response = await fetch(`${API_BASE_URL}/api/documents/${documentId}`);
-                    if (!response.ok) throw new Error(`Server error: ${response.status}`);
-                    const result = await response.json();
-                    if (result.status !== 'success') throw new Error(result.error || 'Unknown error');
+<!-- ══════════════ JAVASCRIPT ══════════════ -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const API = window.location.origin;
+  document.getElementById('api-url-display').textContent = API;
 
-                    const doc = result.document;
-                    currentDocumentId = doc.documentId;
-                    currentFileName   = doc.filename;
+  // ── State ──────────────────────────────
+  let currentDoc = null;
 
-                    // PRONOM format info
-                    const fmt = doc.formatInfo || {};
-                    const pronomHtml = fmt.puid ? `
-                        <p class="mt-1"><strong>Format (PRONOM):</strong>
-                            <a href="${escapeHtml(fmt.pronomUrl)}" target="_blank" class="pronom-badge ml-1">
-                                <i class="fas fa-external-link-alt" style="font-size:9px"></i>
-                                ${escapeHtml(fmt.puid)} — ${escapeHtml(fmt.formatName)}
-                            </a>
-                        </p>` : '';
+  // ── DOM refs ───────────────────────────
+  const fileInput    = document.getElementById('file-input');
+  const dropZone     = document.getElementById('drop-zone');
+  const filePill     = document.getElementById('file-pill');
+  const fileNameEl   = document.getElementById('file-name');
+  const removeBtn    = document.getElementById('remove-file');
+  const uploadBtn    = document.getElementById('upload-btn');
+  const uploadStatus = document.getElementById('upload-status');
+  const apiKeyRow    = document.getElementById('api-key-row');
+  const apiKeyInput  = document.getElementById('api-key-input');
+  const refreshBtn   = document.getElementById('refresh-btn');
+  const docList      = document.getElementById('doc-list');
+  const welcomePanel = document.getElementById('welcome-panel');
+  const detailView   = document.getElementById('detail-view');
 
-                    // AI metadata
-                    let metadataHtml = '';
-                    const ai = doc.aiMetadata;
-                    if (ai) {
-                        const entityChips = (ai.entities || []).map(e => {
-                            const t = typeof e === 'object' ? e : {text: e, type: 'default'};
-                            const cls = `entity-${(t.type||'default').replace(/[^A-Z_]/g,'')}`;
-                            return `<span class="entity-chip ${cls}" title="${escapeHtml(t.type||'')}">${escapeHtml(t.text||String(t))}</span>`;
-                        }).join('') || '<em class="text-gray-400">None detected</em>';
+  // ── File selection ─────────────────────
+  dropZone.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', () => setFile(fileInput.files[0]));
+  ['dragenter','dragover'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.classList.add('dragover'); }));
+  ['dragleave','drop'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.classList.remove('dragover'); }));
+  dropZone.addEventListener('drop', ev => setFile(ev.dataTransfer.files[0]));
+  removeBtn.addEventListener('click', clearFile);
 
-                        metadataHtml = `
-                            <div class="mt-4">
-                                <h5 class="font-semibold mb-1">AI Analysis</h5>
-                                <div class="bg-blue-50 p-3 rounded text-sm space-y-1">
-                                    <p><strong>Summary:</strong> ${escapeHtml(ai.summary || 'Not available')}</p>
-                                    <p><strong>Language:</strong> ${escapeHtml(ai.language || '—')}</p>
-                                    <p><strong>Character count:</strong> ${(ai.characterCount||0).toLocaleString()}</p>
-                                    <div class="mt-2"><strong>Named Entities:</strong><div class="mt-1">${entityChips}</div></div>
-                                </div>
-                            </div>`;
-                    }
+  function setFile(f) {
+    if (!f) return;
+    fileNameEl.textContent = f.name;
+    filePill.classList.remove('hidden');
+    uploadBtn.disabled = false;
+    fileInput._file = f;
+  }
+  function clearFile() {
+    fileInput.value = '';
+    fileInput._file = null;
+    filePill.classList.add('hidden');
+    uploadBtn.disabled = true;
+  }
 
-                    // Blockchain verification
-                    let blockchainHtml = '';
-                    const bc = doc.blockchainVerification;
-                    if (bc) {
-                        const s = bc.status || 'unknown';
-                        const sc = s === 'verified' ? 'bg-green-100 text-green-800'
-                                 : s === 'pending'  ? 'bg-yellow-100 text-yellow-800'
-                                 : 'bg-red-100 text-red-800';
-                        blockchainHtml = `
-                            <div class="mt-4">
-                                <h5 class="font-semibold mb-1">Blockchain Verification</h5>
-                                <div class="bg-green-50 p-3 rounded text-sm space-y-1">
-                                    <p><strong>Status:</strong> <span class="${sc} px-2 py-0.5 rounded-full text-xs">${escapeHtml(s)}</span></p>
-                                    <p><strong>Block index:</strong> ${bc.blockIndex != null ? bc.blockIndex : '—'}</p>
-                                    <p><strong>Timestamp:</strong> ${formatDate(bc.timestamp)}</p>
-                                    <p><strong>Document hash:</strong> <span class="font-mono text-xs break-all">${escapeHtml(bc.documentHash||'—')}</span></p>
-                                    <p><strong>Transaction ID:</strong> <span class="font-mono text-xs break-all">${escapeHtml(bc.transactionId||'—')}</span></p>
-                                    <p class="text-xs text-gray-500 mt-1">AI metadata (entities, tags, summary) is cryptographically bound to this block.</p>
-                                </div>
-                            </div>`;
-                    }
+  // ── Upload ─────────────────────────────
+  uploadBtn.addEventListener('click', async () => {
+    const file = fileInput._file || (fileInput.files && fileInput.files[0]);
+    if (!file) return;
 
-                    documentDetailsContent.innerHTML = `
-                        <div class="text-sm space-y-1">
-                            <p><strong>Document ID:</strong> <span class="font-mono text-xs">${escapeHtml(doc.documentId)}</span></p>
-                            <p><strong>Filename:</strong> ${escapeHtml(doc.filename)}</p>
-                            <p><strong>Content-Type:</strong> ${escapeHtml(doc.contentType || '—')}</p>
-                            ${pronomHtml}
-                            <p><strong>File size:</strong> ${formatFileSize(doc.fileSize)}</p>
-                            <p><strong>Created:</strong> ${formatDate(doc.dateCreated)}</p>
-                            <p><strong>Status:</strong> <span class="${getStatusClass(doc.status)} px-2 py-0.5 rounded-full text-xs">${escapeHtml(doc.status||'—')}</span></p>
-                            <div class="mt-2">
-                                <strong>Tags:</strong>
-                                <div class="flex flex-wrap mt-1">
-                                    ${(doc.tags||[]).length > 0
-                                        ? doc.tags.map(t => `<span class="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full mr-1 mb-1">${escapeHtml(t)}</span>`).join('')
-                                        : '<em class="text-gray-400 text-xs">No tags</em>'}
-                                </div>
-                            </div>
-                            ${metadataHtml}
-                            ${blockchainHtml}
-                        </div>`;
+    uploadBtn.disabled = true;
+    uploadBtn.innerHTML = '<span class="spinner"></span> Uploading…';
+    showStatus('blue', 'Uploading and processing…');
 
-                    if (downloadButton) downloadButton.innerHTML = `<i class="fas fa-download mr-1"></i> Download`;
-                    if (ricLink) ricLink.href = `${API_BASE_URL}/api/documents/${documentId}/metadata.jsonld`;
-                    documentDetails.classList.remove('hidden');
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const headers = {};
+      if (apiKeyInput.value.trim()) headers['X-API-Key'] = apiKeyInput.value.trim();
 
-                    // Load PREMIS events asynchronously
-                    fetchPremisEvents(documentId);
-                } catch (error) {
-                    documentDetailsContent.innerHTML = `<p class="text-red-500 text-sm">Error: ${escapeHtml(error.message)}</p>`;
-                    documentDetails.classList.remove('hidden');
-                }
-            }
+      const r = await fetch(`${API}/api/documents/upload-simple`, { method: 'POST', headers, body: fd });
+      if (r.status === 401) { apiKeyRow.classList.remove('hidden'); throw new Error('API key required.'); }
+      if (!r.ok) throw new Error(`Server error ${r.status}`);
+      const data = await r.json();
+      if (data.status !== 'success') throw new Error(data.error || 'Upload failed');
 
-            // PREMIS event log
-            async function fetchPremisEvents(documentId) {
-                if (!premisSection || !premisTimeline) return;
-                try {
-                    const r = await fetch(`${API_BASE_URL}/api/documents/${documentId}/premis-events`);
-                    if (!r.ok) return;
-                    const data = await r.json();
-                    const events = data.events || [];
-                    if (!events.length) return;
+      showStatus('green', `<i class="fas fa-check-circle"></i> Ingested — AI &amp; blockchain processing in background.`);
+      clearFile();
+      setTimeout(loadDocuments, 2500);
+    } catch (e) {
+      showStatus('red', `<i class="fas fa-exclamation-circle"></i> ${esc(e.message)}`);
+      uploadBtn.disabled = false;
+    }
+    uploadBtn.innerHTML = '<i class="fas fa-lock"></i> Upload &amp; Preserve';
+  });
 
-                    const typeIcons = {
-                        ingestion: 'fa-file-import',
-                        characterization: 'fa-robot',
-                        messageDigestCalculation: 'fa-hashtag',
-                        fixityCheck: 'fa-shield-alt',
-                        validation: 'fa-check-circle',
-                    };
+  function showStatus(type, html) {
+    const map = { blue:'alert-blue', green:'alert-green', red:'alert-red', amber:'alert-amber' };
+    uploadStatus.className = `alert ${map[type]}`;
+    uploadStatus.innerHTML = html;
+    uploadStatus.classList.remove('hidden');
+    if (type === 'green') setTimeout(() => uploadStatus.classList.add('hidden'), 5000);
+  }
 
-                    premisTimeline.innerHTML = events.map(ev => {
-                        const ok = ev.eventOutcomeInformation?.eventOutcome === 'success';
-                        const icon = typeIcons[ev.eventType] || 'fa-circle';
-                        return `<div class="premis-event ${ok ? '' : 'failure'}">
-                            <span class="font-semibold text-blue-700">
-                                <i class="fas ${icon} mr-1"></i>${escapeHtml(ev.eventType)}
-                            </span>
-                            <span class="ml-2 ${ok ? 'text-green-600' : 'text-red-600'} font-semibold text-xs">
-                                ${ok ? 'SUCCESS' : 'FAILURE'}
-                            </span>
-                            <div class="text-gray-500 text-xs">${formatDate(ev.eventDateTime)}</div>
-                            <div class="text-gray-700 text-xs">${escapeHtml(ev.eventDetail||'')}</div>
-                            ${ev.eventOutcomeInformation?.eventOutcomeDetail
-                                ? `<div class="text-gray-500 text-xs italic">${escapeHtml(ev.eventOutcomeInformation.eventOutcomeDetail)}</div>`
-                                : ''}
-                        </div>`;
-                    }).join('');
+  // ── Document list ──────────────────────
+  refreshBtn.addEventListener('click', loadDocuments);
 
-                    premisSection.classList.remove('hidden');
-                } catch (_) {}
-            }
+  async function loadDocuments() {
+    docList.innerHTML = '<div style="padding:24px;text-align:center;color:var(--muted);"><i class="fas fa-spinner spinner"></i></div>';
+    try {
+      const r = await fetch(`${API}/api/documents`);
+      if (!r.ok) throw new Error(`${r.status}`);
+      const data = await r.json();
+      const docs = data.documents || [];
+      updateStats(docs);
 
-            // Fixity check
-            if (fixityButton) {
-                fixityButton.addEventListener('click', async () => {
-                    if (!currentDocumentId) return;
-                    fixityButton.disabled = true;
-                    fixityButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Checking…';
-                    fixityResult.classList.add('hidden');
+      if (!docs.length) {
+        docList.innerHTML = '<div style="padding:32px;text-align:center;color:var(--muted);font-size:13px;">No documents yet — upload one above.</div>';
+        return;
+      }
+      docList.innerHTML = docs.map(d => {
+        const puid = d.formatInfo && d.formatInfo.puid ? `<span style="font-family:\'JetBrains Mono\',monospace;font-size:10px;color:#1d4ed8;">${esc(d.formatInfo.puid)}</span>` : '';
+        return `<div class="doc-item${currentDoc === d.documentId ? ' active' : ''}" data-id="${esc(d.documentId)}">
+          <div class="doc-icon"><i class="${fileIcon(d.contentType)}"></i></div>
+          <div class="doc-info">
+            <div class="doc-name" title="${esc(d.filename)}">${esc(d.filename)}</div>
+            <div class="doc-meta">${statusBadge(d.status)} ${puid}</div>
+          </div>
+        </div>`;
+      }).join('');
+      docList.querySelectorAll('.doc-item').forEach(el =>
+        el.addEventListener('click', () => loadDocument(el.dataset.id))
+      );
+    } catch (e) {
+      docList.innerHTML = `<div style="padding:16px;color:var(--err);font-size:12px;"><i class="fas fa-exclamation-circle"></i> Error: ${esc(e.message)}</div>`;
+    }
+  }
 
-                    try {
-                        const headers = {'Content-Type': 'application/json'};
-                        const apiKey = apiKeyInput ? apiKeyInput.value.trim() : '';
-                        if (apiKey) headers['X-API-Key'] = apiKey;
+  function updateStats(docs) {
+    document.getElementById('stat-docs').textContent = docs.length;
+    fetch(`${API}/api/blockchain/info`).then(r => r.json()).then(d => {
+      document.getElementById('stat-blocks').textContent = d.blockchainInfo?.blocks ?? '—';
+    }).catch(() => {});
+    fetch(`${API}/health`).then(r => r.json()).then(d => {
+      const el = document.getElementById('stat-status');
+      el.textContent = d.database === 'connected' ? 'Live ✓' : 'DB ✗';
+      el.style.color = d.database === 'connected' ? 'var(--gold)' : '#fc8181';
+    }).catch(() => {});
+  }
 
-                        const r = await fetch(
-                            `${API_BASE_URL}/api/documents/${currentDocumentId}/fixity-check`,
-                            {method: 'POST', headers}
-                        );
-                        const data = await r.json();
-                        const pass = data.passed === true;
-                        fixityResult.className = `mt-3 p-3 rounded text-sm ${pass ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
-                        fixityResult.innerHTML = `<i class="fas ${pass ? 'fa-check-circle' : 'fa-exclamation-triangle'} mr-2"></i>
-                            <strong>${pass ? 'PASS' : 'FAIL'}:</strong> ${escapeHtml(data.outcome || data.message || '')}`;
-                        fixityResult.classList.remove('hidden');
-                        fetchPremisEvents(currentDocumentId);
-                    } catch (e) {
-                        fixityResult.className = 'mt-3 p-3 rounded text-sm bg-red-100 text-red-800';
-                        fixityResult.innerHTML = `<i class="fas fa-exclamation-circle mr-1"></i> ${escapeHtml(e.message)}`;
-                        fixityResult.classList.remove('hidden');
-                    }
+  // ── Document detail ────────────────────
+  async function loadDocument(id) {
+    currentDoc = id;
+    welcomePanel.classList.add('hidden');
+    detailView.style.display = 'flex';
 
-                    fixityButton.disabled = false;
-                    fixityButton.innerHTML = '<i class="fas fa-shield-alt mr-1"></i> Fixity Check';
-                });
-            }
-            
-            // Helper functions
-            function getStatusClass(status) {
-                if (!status) return 'bg-gray-100 text-gray-800';
-                
-                switch (status.toLowerCase()) {
-                    case 'processed':
-                        return 'bg-green-100 text-green-800';
-                    case 'uploading':
-                    case 'pending':
-                        return 'bg-yellow-100 text-yellow-800';
-                    case 'error':
-                        return 'bg-red-100 text-red-800';
-                    default:
-                        return 'bg-gray-100 text-gray-800';
-                }
-            }
-            
-            function formatDate(dateString) {
-                if (!dateString) return 'Not available';
-                try {
-                    const date = new Date(dateString);
-                    return date.toLocaleString();
-                } catch (e) {
-                    return 'Invalid date';
-                }
-            }
-            
-            function formatFileSize(bytes) {
-                if (!bytes) return 'Unknown';
-                const units = ['B', 'KB', 'MB', 'GB', 'TB'];
-                let size = bytes;
-                let unitIndex = 0;
-                
-                while (size >= 1024 && unitIndex < units.length - 1) {
-                    size /= 1024;
-                    unitIndex++;
-                }
-                
-                return `${size.toFixed(2)} ${units[unitIndex]}`;
-            }
-            
-            // Security: Escape HTML to prevent XSS
-            function escapeHtml(unsafe) {
-                if (unsafe === null || unsafe === undefined) return '';
-                return String(unsafe)
-                    .replace(/&/g, "&amp;")
-                    .replace(/</g, "&lt;")
-                    .replace(/>/g, "&gt;")
-                    .replace(/"/g, "&quot;")
-                    .replace(/'/g, "&#039;");
-            }
-            
-            // Initialize on page load
-            fetchDocuments();
-        });
-    </script>
+    // refresh active state in list
+    docList.querySelectorAll('.doc-item').forEach(el => el.classList.toggle('active', el.dataset.id === id));
+
+    try {
+      const r = await fetch(`${API}/api/documents/${id}`);
+      if (!r.ok) throw new Error(`${r.status}`);
+      const { document: doc } = await r.json();
+
+      document.getElementById('detail-title').textContent = doc.filename || id;
+      document.getElementById('detail-id').textContent = id;
+      document.getElementById('detail-status-badge').innerHTML = statusBadge(doc.status);
+
+      renderOverview(doc);
+      renderAI(doc);
+      renderBlockchain(doc);
+      renderActions(doc);
+
+      // activate overview tab
+      activateTab('overview');
+
+      // load PREMIS events
+      loadEvents(id);
+    } catch (e) {
+      document.getElementById('overview-fields').innerHTML = `<div style="color:var(--err);font-size:12px;padding:8px;">${esc(e.message)}</div>`;
+    }
+  }
+
+  function renderOverview(doc) {
+    const fmt = doc.formatInfo || {};
+    const pronomHtml = fmt.puid
+      ? `<a href="${esc(fmt.pronomUrl)}" target="_blank" class="pronom-badge"><i class="fas fa-external-link-alt"></i>${esc(fmt.puid)} — ${esc(fmt.formatName)}</a>`
+      : '<span style="color:var(--muted);font-size:12px;">Not identified</span>';
+    document.getElementById('overview-fields').innerHTML = `
+      <div class="field"><span class="field-label">Filename</span><span class="field-value">${esc(doc.filename)}</span></div>
+      <div class="field"><span class="field-label">File size</span><span class="field-value">${fmtSize(doc.fileSize)}</span></div>
+      <div class="field"><span class="field-label">PRONOM format</span><span class="field-value">${pronomHtml}</span></div>
+      <div class="field"><span class="field-label">Content-Type</span><span class="field-value field-mono">${esc(doc.contentType || '—')}</span></div>
+      <div class="field"><span class="field-label">Status</span><span class="field-value">${statusBadge(doc.status)}</span></div>
+      <div class="field"><span class="field-label">Ingested</span><span class="field-value">${fmtDate(doc.dateCreated)}</span></div>
+      <div class="field"><span class="field-label">Last modified</span><span class="field-value">${fmtDate(doc.dateModified)}</span></div>
+      <div class="field"><span class="field-label">Document ID</span><span class="field-value field-mono" style="font-size:10px;">${esc(doc.documentId)}</span></div>
+    `;
+  }
+
+  function renderAI(doc) {
+    const ai = doc.aiMetadata || {};
+    const entities = ai.entities || [];
+    const tags = doc.tags || [];
+
+    const entityHtml = entities.length
+      ? entities.map(e => {
+          const t = typeof e === 'object' ? e : { text: e, type: 'default' };
+          const cls = `chip-${(t.type||'default').replace(/[^A-Z_]/g,'')}`;
+          return `<span class="entity-chip ${cls}" title="${esc(t.type||'')}">${esc(t.text||String(t))} <span class="etype">${esc(t.type||'')}</span></span>`;
+        }).join('')
+      : '<span style="color:var(--muted);font-size:12px;">No entities detected</span>';
+
+    const tagHtml = tags.length
+      ? tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')
+      : '<span style="color:var(--muted);font-size:12px;">No tags</span>';
+
+    document.getElementById('ai-content').innerHTML = `
+      ${ai.summary ? `<div style="background:var(--cream);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:13px;line-height:1.6;margin-bottom:16px;"><strong style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);">AI Summary</strong><br>${esc(ai.summary)}</div>` : ''}
+      <div style="margin-bottom:16px;">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:8px;">Named Entities <span style="color:var(--navy-mid);font-size:11px;">(${entities.length})</span></div>
+        <div class="flex flex-wrap">${entityHtml}</div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:8px;">Subject Tags <span style="color:var(--navy-mid);font-size:11px;">(${tags.length})</span></div>
+        <div>${tagHtml}</div>
+      </div>
+      ${ai.language ? `<div class="field"><span class="field-label">Language</span><span class="field-value">${esc(ai.language)}</span></div>` : ''}
+      ${ai.characterCount ? `<div class="field"><span class="field-label">Character count</span><span class="field-value">${ai.characterCount.toLocaleString()}</span></div>` : ''}
+    `;
+  }
+
+  function renderBlockchain(doc) {
+    const bc = doc.blockchainVerification || {};
+    const state = bc.status === 'verified' ? 'verified' : bc.status === 'pending' ? 'pending' : 'error';
+    const icons = { verified: 'fa-check-circle', pending: 'fa-clock', error: 'fa-times-circle' };
+    const labels = { verified: 'Blockchain Verified', pending: 'Pending Registration', error: 'Verification Error' };
+
+    document.getElementById('bc-content').innerHTML = `
+      <div class="bc-seal ${state}">
+        <div class="bc-seal-icon"><i class="fas ${icons[state]}"></i></div>
+        <div style="flex:1;">
+          <div class="bc-seal-title">${labels[state]}</div>
+          ${bc.blockIndex != null ? `<div class="bc-detail"><strong>Block index:</strong> #${bc.blockIndex}</div>` : ''}
+          ${bc.timestamp ? `<div class="bc-detail"><strong>Registered:</strong> ${fmtDate(bc.timestamp)}</div>` : ''}
+          ${bc.documentHash ? `<div class="bc-detail"><strong>SHA-256:</strong></div><code class="bc-hash">${esc(bc.documentHash)}</code>` : ''}
+          ${bc.transactionId ? `<div class="bc-detail" style="margin-top:8px;"><strong>Transaction ID:</strong></div><code class="bc-hash">${esc(bc.transactionId)}</code>` : ''}
+          <div class="bc-ai-note"><i class="fas fa-robot" style="color:var(--gold);"></i> AI metadata (entities, tags, summary) is cryptographically bound to this block — not just the file hash.</div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderActions(doc) {
+    document.getElementById('actions-content').innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px;">Download</div>
+          <a href="${API}/api/documents/${esc(doc.documentId)}/download" class="btn btn-primary btn-full" style="text-decoration:none;">
+            <i class="fas fa-download"></i> Download Original File
+          </a>
+        </div>
+        <div class="divider"></div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px;">Fixity Check</div>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:10px;">Re-hash the stored file and compare against the blockchain record. Logs a PREMIS fixityCheck event.</p>
+          <button id="fixity-btn" class="btn btn-outline btn-full"><i class="fas fa-shield-alt"></i> Run Fixity Check</button>
+          <div id="fixity-result" class="hidden" style="margin-top:8px;"></div>
+        </div>
+        <div class="divider"></div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px;">Linked Data Export</div>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:10px;">ICA Records in Contexts (RiC) aligned JSON-LD — suitable for TNA Project Omega / Discovery API integration.</p>
+          <a href="${API}/api/documents/${esc(doc.documentId)}/metadata.jsonld" target="_blank" class="btn btn-outline btn-full" style="text-decoration:none;">
+            <i class="fas fa-code"></i> Open RiC JSON-LD
+          </a>
+        </div>
+      </div>
+    `;
+
+    document.getElementById('fixity-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('fixity-btn');
+      const res = document.getElementById('fixity-result');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Checking…';
+      try {
+        const headers = {};
+        if (apiKeyInput.value.trim()) headers['X-API-Key'] = apiKeyInput.value.trim();
+        const r = await fetch(`${API}/api/documents/${doc.documentId}/fixity-check`, { method:'POST', headers });
+        const data = await r.json();
+        const pass = data.passed === true;
+        res.className = `alert ${pass ? 'alert-green' : 'alert-red'}`;
+        res.innerHTML = `<i class="fas ${pass ? 'fa-check-circle':'fa-exclamation-triangle'}"></i> <strong>${pass?'PASS':'FAIL'}:</strong> ${esc(data.outcome || data.message || '')}`;
+        res.classList.remove('hidden');
+        loadEvents(doc.documentId);
+      } catch(e) {
+        res.className = 'alert alert-red';
+        res.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${esc(e.message)}`;
+        res.classList.remove('hidden');
+      }
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-shield-alt"></i> Run Fixity Check';
+    });
+  }
+
+  async function loadEvents(id) {
+    const el = document.getElementById('events-content');
+    try {
+      const r = await fetch(`${API}/api/documents/${id}/premis-events`);
+      const data = await r.json();
+      const events = data.events || [];
+      if (!events.length) { el.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:4px 0;">No events recorded yet.</div>'; return; }
+
+      const icons = {
+        ingestion: 'fa-file-import', characterization: 'fa-robot',
+        messageDigestCalculation: 'fa-hashtag', fixityCheck: 'fa-shield-alt', validation: 'fa-check-circle'
+      };
+      el.innerHTML = `<div class="timeline">${events.map(ev => {
+        const ok = ev.eventOutcomeInformation?.eventOutcome === 'success';
+        return `<div class="t-event">
+          <div class="t-dot ${ok?'ok':'err'}"></div>
+          <div class="t-head">
+            <span class="t-type"><i class="fas ${icons[ev.eventType]||'fa-circle'}" style="color:var(--navy-mid);margin-right:4px;"></i>${esc(ev.eventType)}</span>
+            <span class="badge ${ok?'badge-green':'badge-red'}" style="font-size:10px;">${ok?'SUCCESS':'FAILURE'}</span>
+          </div>
+          <div class="t-time">${fmtDate(ev.eventDateTime)}</div>
+          <div class="t-detail">${esc(ev.eventDetail||'')}</div>
+          ${ev.eventOutcomeInformation?.eventOutcomeDetail ? `<div class="t-outcome">${esc(ev.eventOutcomeInformation.eventOutcomeDetail)}</div>` : ''}
+        </div>`;
+      }).join('')}</div>`;
+    } catch(_) { el.innerHTML = '<div style="color:var(--muted);font-size:12px;">Could not load events.</div>'; }
+  }
+
+  // ── Tabs ───────────────────────────────
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => activateTab(btn.dataset.tab));
+  });
+  function activateTab(name) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === `tab-${name}`));
+  }
+
+  // ── Helpers ────────────────────────────
+  function statusBadge(s) {
+    if (!s) return '';
+    const map = { processed:'badge-green', processing:'badge-amber', uploading:'badge-amber', pending:'badge-amber', error:'badge-red' };
+    return `<span class="badge ${map[s]||'badge-gray'}">${esc(s)}</span>`;
+  }
+  function fileIcon(ct) {
+    if (!ct) return 'fas fa-file';
+    if (ct.includes('pdf')) return 'fas fa-file-pdf';
+    if (ct.includes('word') || ct.includes('docx')) return 'fas fa-file-word';
+    if (ct.includes('image')) return 'fas fa-file-image';
+    if (ct.includes('text')) return 'fas fa-file-alt';
+    return 'fas fa-file';
+  }
+  function fmtDate(s) { if (!s) return '—'; try { return new Date(s).toLocaleString(); } catch(_) { return s; } }
+  function fmtSize(b) {
+    if (!b) return '—';
+    const u = ['B','KB','MB','GB']; let s = b, i = 0;
+    while (s >= 1024 && i < 3) { s /= 1024; i++; }
+    return `${s.toFixed(1)} ${u[i]}`;
+  }
+  function esc(s) {
+    if (s == null) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+  }
+
+  // ── API key probe ──────────────────────
+  fetch(`${API}/api/documents/upload-simple`, { method:'POST' })
+    .then(r => { if (r.status === 401) apiKeyRow.classList.remove('hidden'); })
+    .catch(() => {});
+
+  // ── Init ───────────────────────────────
+  loadDocuments();
+});
+</script>
 </body>
 </html>
