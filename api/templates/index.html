@@ -490,7 +490,7 @@
 <section id="about" style="padding:48px 0;">
   <div class="container">
     <h2 class="section-title">About ArchivAI</h2>
-    <p class="section-sub">Published at iPRES 2025 · Builds on and extends the ARCHANGEL project (UK National Archives / University of Surrey, 2019)</p>
+    <p class="section-sub">Published at iPRES 2025 · The first system to integrate AI metadata extraction and blockchain verification into a single, cohesive preservation workflow</p>
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:32px;">
       <div class="feature-card"><div class="feature-icon"><i class="fas fa-robot"></i></div><div><div class="feature-title">spaCy Named Entity Recognition</div><div class="feature-desc">Extracts PERSON, ORGANIZATION, PLACE, DATE, LAW, FACILITY, NATIONALITY and more from document text using production-grade NLP.</div></div></div>
       <div class="feature-card"><div class="feature-icon"><i class="fas fa-link"></i></div><div><div class="feature-title">Blockchain + AI Binding</div><div class="feature-desc">AI-generated metadata (entities, tags, summary) is cryptographically included in each blockchain transaction — not just the file hash.</div></div></div>
@@ -499,6 +499,71 @@
       <div class="feature-card"><div class="feature-icon"><i class="fas fa-code"></i></div><div><div class="feature-title">ICA RiC JSON-LD Export</div><div class="feature-desc">Each document exposes a /metadata.jsonld endpoint aligned with the Records in Contexts ontology — ready for linked-data catalogue integration.</div></div></div>
       <div class="feature-card"><div class="feature-icon"><i class="fas fa-shield-check"></i></div><div><div class="feature-title">On-Demand Fixity Checking</div><div class="feature-desc">Re-hash any stored file at any time and compare against its blockchain record. Every check is logged as a PREMIS fixityCheck event.</div></div></div>
     </div>
+    <!-- Landscape comparison -->
+    <div class="card" style="margin-bottom:24px;">
+      <div class="card-header"><h3><i class="fas fa-chart-bar" style="color:var(--gold);margin-right:6px;"></i>Market Landscape &amp; Comparative Analysis</h3></div>
+      <div class="card-body" style="padding:0;">
+        <p style="padding:12px 16px 8px;font-size:13px;color:var(--muted);">Existing systems address either AI <em>or</em> blockchain — not both in a unified workflow. ArchivAI is the first to integrate them so that AI-generated content achieves the same cryptographic verification as the original document. <em>(Adebanjo, Alabi &amp; Bolaji, iPRES 2025, §IV.E)</em></p>
+        <div style="overflow-x:auto;">
+          <table style="width:100%;border-collapse:collapse;font-size:12px;">
+            <thead>
+              <tr style="background:var(--navy);color:var(--white);">
+                <th style="padding:10px 16px;text-align:left;font-weight:600;">System</th>
+                <th style="padding:10px 12px;text-align:center;font-weight:600;">AI Metadata</th>
+                <th style="padding:10px 12px;text-align:center;font-weight:600;">Blockchain</th>
+                <th style="padding:10px 12px;text-align:center;font-weight:600;">AI+BC Binding</th>
+                <th style="padding:10px 16px;text-align:left;font-weight:600;">Gap</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:9px 16px;font-weight:600;color:var(--navy);">Preservica</td>
+                <td style="padding:9px 12px;text-align:center;"><span style="color:#16a34a;">&#10003;</span> Partial</td>
+                <td style="padding:9px 12px;text-align:center;"><span style="color:#dc2626;">&#10007;</span></td>
+                <td style="padding:9px 12px;text-align:center;"><span style="color:#dc2626;">&#10007;</span></td>
+                <td style="padding:9px 16px;color:var(--muted);">No blockchain verification</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border);background:#fafaf9;">
+                <td style="padding:9px 16px;font-weight:600;color:var(--navy);">ARCHANGEL <span style="font-size:10px;color:var(--muted);">(UK National Archives)</span></td>
+                <td style="padding:9px 12px;text-align:center;"><span style="color:#dc2626;">&#10007;</span></td>
+                <td style="padding:9px 12px;text-align:center;"><span style="color:#16a34a;">&#10003;</span></td>
+                <td style="padding:9px 12px;text-align:center;"><span style="color:#dc2626;">&#10007;</span></td>
+                <td style="padding:9px 16px;color:var(--muted);">Limited AI features</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:9px 16px;font-weight:600;color:var(--navy);">Arkivum</td>
+                <td style="padding:9px 12px;text-align:center;"><span style="color:#92400e;">&#10003;</span> Compliance only</td>
+                <td style="padding:9px 12px;text-align:center;"><span style="color:#92400e;">&#10003;</span> Limited</td>
+                <td style="padding:9px 12px;text-align:center;"><span style="color:#dc2626;">&#10007;</span></td>
+                <td style="padding:9px 16px;color:var(--muted);">Neither capability is comprehensive</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border);background:#fafaf9;">
+                <td style="padding:9px 16px;font-weight:600;color:var(--navy);">DuraSpace / Fedora</td>
+                <td style="padding:9px 12px;text-align:center;"><span style="color:#dc2626;">&#10007;</span></td>
+                <td style="padding:9px 12px;text-align:center;"><span style="color:#dc2626;">&#10007;</span></td>
+                <td style="padding:9px 12px;text-align:center;"><span style="color:#dc2626;">&#10007;</span></td>
+                <td style="padding:9px 16px;color:var(--muted);">Integrity checks only, no AI/blockchain</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:9px 16px;font-weight:600;color:var(--navy);">Perma.cc</td>
+                <td style="padding:9px 12px;text-align:center;"><span style="color:#dc2626;">&#10007;</span></td>
+                <td style="padding:9px 12px;text-align:center;"><span style="color:#dc2626;">&#10007;</span></td>
+                <td style="padding:9px 12px;text-align:center;"><span style="color:#dc2626;">&#10007;</span></td>
+                <td style="padding:9px 16px;color:var(--muted);">Web archiving only, no AI or blockchain</td>
+              </tr>
+              <tr style="background:linear-gradient(90deg,#0d2137 0%,#1a3a5c 100%);">
+                <td style="padding:10px 16px;font-weight:700;color:var(--gold);">ArchivAI &#9733;</td>
+                <td style="padding:10px 12px;text-align:center;color:var(--gold);font-weight:700;">&#10003; Full NER</td>
+                <td style="padding:10px 12px;text-align:center;color:var(--gold);font-weight:700;">&#10003; Full chain</td>
+                <td style="padding:10px 12px;text-align:center;color:var(--gold);font-weight:700;">&#10003; Unified</td>
+                <td style="padding:10px 16px;color:#a8c4d8;font-size:11px;">AI metadata cryptographically bound to every block</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-header"><h3>Team &amp; Citation</h3></div>
       <div class="card-body">
